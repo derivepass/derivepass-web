@@ -9,7 +9,8 @@
       body {
         padding: 24px 0 0 0;
         background: #111;
-        font-family: Optima, Helvetica, Sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, Optima, Helvetica,
+            Sans-serif;
         color: #eee;
         text-align: center;
       }
@@ -22,6 +23,14 @@
       h1, h2 {
         margin: 8px 0 8px;
         font-weight: normal;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+
+      h2 {
+        font-size: 24px;
       }
 
       #email, #submit {
@@ -43,19 +52,19 @@
       }
 
       #footer {
-        font-size: 24px;
+        font-size: 16px;
         line-height: 32px;
       }
 
       #footer img {
         margin-top: 48px;
         position: relative;
-        top: 8px;
+        top: 10px;
       }
     </style>
   </head>
   <body>
-    <form id=subscribe>
+    <form id=subscribe action="#">
       <img id=app-icon
           src="app.png" srcset="app.png 1x, app-2x.png 2x" alt="DerivePass"/>
       <h1>DerivePass</h1>
@@ -71,5 +80,7 @@
           src="app-store.png"
           srcset="app-store.png 1x, app-store-2x.png 2x" alt="App Store"/>
     </section>
+
+    <script src="main.js"></script>
   </body>
 </htmL>

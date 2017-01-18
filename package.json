@@ -8,5 +8,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bn.js": "^4.11.6",
+    "browserify": "^13.3.0",
+    "hash.js": "^1.0.3"
+  }
 }
