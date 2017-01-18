@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const Server = require('../');
+
+const options = JSON.parse(fs.readFileSync(process.argv[2]).toString());
+const s = new Server(options);
+
+s.listen(options.port || 8000, () => {
+  console.error('Listening at %j', s.address());
+});
