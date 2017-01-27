@@ -52,37 +52,44 @@
         margin: 24px 0;
       }
 
-      #footer {
+      #links {
         font-size: 16px;
         line-height: 32px;
       }
 
-      #footer img {
-        margin-top: 48px;
+      #links img {
         position: relative;
         top: 10px;
       }
 
-      #footer #github-star-button {
+      #links #github-star-button {
         position: relative;
         top: 4px;
+      }
+
+      #video {
+        margin-top: 16px;
       }
     </style>
   </head>
   <body>
-    <form action="//derivepass.us15.list-manage.com/subscribe/post?u=35098635480a9585ff4cf49ca&amp;id=a70c987b1d" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" novalidate>
+    <header>
       <img id=app-icon
           src="/app.png" srcset="/app.png 1x, /app-2x.png 2x" alt="DerivePass"/>
       <h1>DerivePass</h1>
       <h2>(Emoji password manager)</h2>
+    </header>
 
-      <p id=emoji>😬</p>
-      <input type=email name=EMAIL pattern="^[^@\s]+@[^\.@\s]+\.[^@\s]+$" id=email placeholder="email" />
-      <input type=hidden name="b_35098635480a9585ff4cf49ca_a70c987b1d" tabindex="-1" value="">
-      <input type=submit id=submit value="Subscribe" />
-    </form>
+    <section id=subscribe>
+      <form action="//derivepass.us15.list-manage.com/subscribe/post?u=35098635480a9585ff4cf49ca&amp;id=a70c987b1d" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" novalidate>
+        <p id=emoji>😬</p>
+        <input type=email name=EMAIL pattern="^[^@\s]+@[^\.@\s]+\.[^@\s]+$" id=email placeholder="email" />
+        <input type=hidden name="b_35098635480a9585ff4cf49ca_a70c987b1d" tabindex="-1" value="">
+        <input type=submit id=submit value="Subscribe" />
+      </form>
+    </section>
 
-    <section id=footer>
+    <section id=links>
       <a href="https://itunes.apple.com/us/app/derivepass/id1195431375">
         <img id=app-store-icon
           src="/app-store.svg"
@@ -99,6 +106,10 @@
           Star us on GitHub
         </a>
       </span>
+    </section>
+
+    <section id=video>
+      <iframe width="250" height="445" src="https://www.youtube.com/embed/V7_duBmxqvw?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
     </section>
 
     <script src="/main.js"></script>
