@@ -3,6 +3,7 @@
   <head>
     <link rel="icon" type="image/png" href="/favicon.png">
     <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
     <title>DerivePass - Emoji Password Manager</title>
 
@@ -74,6 +75,30 @@
       #video {
         margin-top: 16px;
       }
+
+      #support {
+        font-size: 10px;
+        margin-top: 8px;
+        color: #bbb;
+      }
+
+      #support a, #support a:visited {
+        color: #bbb;
+      }
+
+      @media screen and (max-width: 40.5em) {
+        #submit {
+          display: none;
+        }
+
+        #links > span {
+          display: block;
+        }
+
+        #links #github-star-button {
+          margin-top: 8px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -94,11 +119,13 @@
     </section>
 
     <section id=links>
-      <a href="https://itunes.apple.com/us/app/derivepass/id1195431375">
-        <img id=app-store-icon
-          src="/app-store.svg"
-          alt="Download on the App Store"/>
-      </a>
+      <span>
+        <a href="https://itunes.apple.com/us/app/derivepass/id1195431375">
+          <img id=app-store-icon
+            src="/app-store.svg"
+            alt="Download on the App Store"/>
+        </a>
+      </span>
       <span id=github-star-button>
         <a class="github-button"
             href="https://github.com/derivepass/derivepass-ios"
@@ -128,6 +155,14 @@
           src="https://www.youtube.com/embed/V7_duBmxqvw?rel=0&amp;controls=0&amp;showinfo=0"
           frameborder="0" allowfullscreen>
       </iframe>
+    </section>
+
+    <section id=support>
+      Have questions? Need support? Send us an email:
+      <br/>
+      <a href="mailto:derivepass-support@indutny.com?Subject=DerivePass%20Support">
+        derivepass-support@indutny.com
+      </a>
     </section>
 
     <script src="/main.js"></script>
