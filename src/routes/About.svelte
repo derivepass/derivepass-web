@@ -6,10 +6,10 @@
   import ExternalLink from '../components/ExternalLink.svelte';
 </script>
 
-<container class="flex flex-row-reverse flex-wrap justify-center items-center">
+<container class="flex flex-row-reverse flex-wrap justify-center items-center text-center sm:text-start">
   <img src={logo} alt="Big Logotype" class="grow max-w-xs lg:max-w-full"/>
 
-  <container class="basis-96">
+  <container class="grow basis-96 mb-4">
     <h1 class="text-4xl font-semibold mb-4">DerivePass</h1>
 
     <h2 class="text-xl mb-4">
