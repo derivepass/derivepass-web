@@ -2,8 +2,15 @@
   import { link, location } from 'svelte-spa-router';
 
   export let href: string;
+
+  $: ariaPressed = $location == href;
 </script>
 
-<a {href} aria-pressed={$location === href} class="aria-pressed:font-semibold" use:link>
+<a
+  {href}
+  aria-pressed={ariaPressed}
+  class="text-zinc-500 hover:text-black aria-pressed:text-black"
+  use:link
+>
   <slot/>
 </a>
