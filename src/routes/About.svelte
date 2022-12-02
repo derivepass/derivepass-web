@@ -19,7 +19,7 @@
     <a
       href="/login"
       use:link
-      class="inline-block px-4 py-2 rounded-md bg-blue-500 hover:bg-blue-600 text-white text-xl"
+      class="inline-block px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white text-xl"
     >
       Start
     </a>
