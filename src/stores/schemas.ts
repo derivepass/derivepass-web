@@ -35,3 +35,17 @@ export const ApplicationSchema = z.object({
 });
 
 export type Application = z.infer<typeof ApplicationSchema>;
+
+export function isApplicationUnchanged(
+  a: Application,
+  b: Application,
+): boolean {
+  return a.id === b.id &&
+    a.v === b.v &&
+    a.domain === b.domain &&
+    a.login === b.login &&
+    a.revision === b.revision &&
+    a.allowedChars === b.allowedChars &&
+    a.requiredChars === b.requiredChars &&
+    a.passwordLen === b.passwordLen;
+}

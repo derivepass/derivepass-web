@@ -1,4 +1,5 @@
 <script type="ts">
+  export let name: string | undefined = undefined;
   export let type: 'password' | 'text' | 'email' | 'number' = 'text';
   export let label: string;
   export let hint: string | undefined = undefined;
@@ -20,6 +21,7 @@
 
   <input
     class="w-full p-2 rounded border"
+    {name}
     {type}
     autocomplete="off"
     autocorrect="off"

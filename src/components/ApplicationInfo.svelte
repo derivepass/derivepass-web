@@ -1,7 +1,7 @@
 <script lang="ts">
   import { pop as goBack } from 'svelte-spa-router';
 
-  import type { Application } from '../stores/schemas';
+  import { type Application, isApplicationUnchanged } from '../stores/schemas';
   import FormField from '../components/FormField.svelte';
 
   import { computePassword } from '../crypto';
@@ -21,11 +21,11 @@
   const master = 'masterpassword';
 
   let edited = { ...app };
+  $: hasChanges = !isApplicationUnchanged(app, edited);
 
   // State
   let isEditing = isNew;
   let isShowingExtra = true;
-  let hasChanges = false;
   let password: string | undefined;
   let passwordState = PasswordState.Initial;
   let justCopiedTimer: NodeJS.Timeout | undefined;
@@ -56,6 +56,13 @@
   }
 
   function onSave() {
+  }
+
+  function onReset() {
+    edited = { ...app };
+  }
+
+  function onDelete() {
   }
 
   function toggleEditing() {
@@ -97,15 +104,18 @@
 {#if isEditing}
   <form on:submit|preventDefault={onSave}>
     <FormField
+      name="domain"
       label="Domain name"
       hint="Examples: google.com, fb.com, etc"
       bind:value={edited.domain}/>
     <FormField
+      name="login"
       type="email"
       label="Username"
       hint="Examples: my_user_name, derivepass82"
       bind:value={edited.login}/>
     <FormField
+      name="revision"
       type="number"
       label="Revision"
       hint="Increment this by one to change the password"
@@ -126,14 +136,17 @@
           Most applications don't require editing options below.
         </p>
         <FormField
+          name="allowedChars"
           label="Allowed characters"
           hint="Characters that can be present in the password"
           bind:value={edited.allowedChars}/>
         <FormField
+          name="requiredChars"
           label="Required characters"
           hint="Characters that must be present in the password"
           bind:value={edited.requiredChars}/>
         <FormField
+          name="passwordLen"
           type="number"
           label="Password length"
           bind:value={edited.passwordLen}/>
@@ -154,6 +167,7 @@
         disabled={!hasChanges}
         class="px-4 py-2 last:rounded-r bg-gray-500 hover:bg-gray-600 text-white
           disabled:bg-gray-400"
+        on:click|preventDefault={onReset}
       >
         Reset
       </button>
@@ -163,6 +177,7 @@
           type="button"
           class="px-4 py-2 last:rounded-r bg-red-500 hover:bg-red-600 text-white
             disabled:bg-red-400"
+          on:click|preventDefault={onDelete}
         >
           Delete
         </button>
