@@ -1,7 +1,14 @@
 <script lang="ts">
   import { pop as goBack } from 'svelte-spa-router';
+  import { createForm } from 'felte';
+  import { reporter } from '@felte/reporter-svelte';
+  import { validator } from '@felte/validator-zod';
 
-  import { type Application, isApplicationUnchanged } from '../stores/schemas';
+  import {
+    type Application,
+    type ApplicationData,
+    ApplicationDataSchema,
+  } from '../stores/schemas';
   import FormField from '../components/FormField.svelte';
 
   import { computePassword } from '../crypto';
@@ -20,12 +27,9 @@
   // TODO(indutny): load it from store
   const master = 'masterpassword';
 
-  let edited = { ...app };
-  $: hasChanges = !isApplicationUnchanged(app, edited);
-
   // State
   let isEditing = isNew;
-  let isShowingExtra = true;
+  let isShowingExtra = false;
   let password: string | undefined;
   let passwordState = PasswordState.Initial;
   let justCopiedTimer: NodeJS.Timeout | undefined;
@@ -34,7 +38,10 @@
     if (passwordState === PasswordState.Initial) {
       passwordState = PasswordState.Computing;
       setTimeout(() => {
-        password = computePassword(master, edited);
+        password = computePassword(master, {
+          ...app,
+          ...$data,
+        });
         passwordState = PasswordState.Computed;
       }, 0);
       return;
@@ -55,12 +62,16 @@
     return;
   }
 
-  function onSave() {
-  }
-
-  function onReset() {
-    edited = { ...app };
-  }
+  const { form, data, reset, isDirty, isValid } = createForm<ApplicationData>({
+    initialValues: app,
+    onSubmit(values) {
+      console.log(values);
+    },
+    extend: [
+      validator({ schema: ApplicationDataSchema }),
+      reporter,
+    ],
+  });
 
   function onDelete() {
   }
@@ -78,7 +89,7 @@
   }
 </script>
 
-<h2 class="text-2xl"><b>{edited.domain}</b>/{edited.login}</h2>
+<h2 class="text-2xl"><b>{$data.domain}</b>/{$data.login}</h2>
 
 <section class="mt-2 mb-4">
   <button
@@ -102,24 +113,33 @@
 </section>
 
 {#if isEditing}
-  <form on:submit|preventDefault={onSave}>
+  <form use:form>
     <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
       name="domain"
       label="Domain name"
-      hint="Examples: google.com, fb.com, etc"
-      bind:value={edited.domain}/>
+      hint="Examples: google.com, fb.com, etc"/>
     <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
       name="login"
       type="email"
       label="Username"
-      hint="Examples: my_user_name, derivepass82"
-      bind:value={edited.login}/>
+      hint="Examples: my_user_name, derivepass82"/>
     <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
       name="revision"
       type="number"
       label="Revision"
-      hint="Increment this by one to change the password"
-      bind:value={edited.revision}/>
+      hint="Increment this by one to change the password"/>
 
     <button
       type="button"
@@ -130,33 +150,40 @@
       Extra
     </button>
 
-    {#if isShowingExtra}
-      <section class="my-2">
-        <p class="text-red-500 my-2">
-          Most applications don't require editing options below.
-        </p>
-        <FormField
-          name="allowedChars"
-          label="Allowed characters"
-          hint="Characters that can be present in the password"
-          bind:value={edited.allowedChars}/>
-        <FormField
-          name="requiredChars"
-          label="Required characters"
-          hint="Characters that must be present in the password"
-          bind:value={edited.requiredChars}/>
-        <FormField
-          name="passwordLen"
-          type="number"
-          label="Password length"
-          bind:value={edited.passwordLen}/>
-      </section>
-    {/if}
+    <section class="my-2" class:hidden={!isShowingExtra}>
+      <p class="text-red-500 my-2">
+        Most applications don't require editing options below.
+      </p>
+      <FormField
+        on:input
+        on:change
+        on:focus
+        on:blur
+        name="allowedChars"
+        label="Allowed characters"
+        hint="Characters that can be present in the password"/>
+      <FormField
+        on:input
+        on:change
+        on:focus
+        on:blur
+        name="requiredChars"
+        label="Required characters"
+        hint="Characters that must be present in the password"/>
+      <FormField
+        on:input
+        on:change
+        on:focus
+        on:blur
+        name="passwordLen"
+        type="number"
+        label="Password length"/>
+    </section>
 
     <section class="flex my-2">
       <button
         type="submit"
-        disabled={!hasChanges}
+        disabled={$isValid && !$isDirty}
         class="px-4 py-2 rounded-l bg-blue-500 hover:bg-blue-600 text-white
           disabled:bg-blue-400"
       >
@@ -164,10 +191,10 @@
       </button>
       <button
         type="reset"
-        disabled={!hasChanges}
+        disabled={!$isDirty}
         class="px-4 py-2 last:rounded-r bg-gray-500 hover:bg-gray-600 text-white
           disabled:bg-gray-400"
-        on:click|preventDefault={onReset}
+        on:click|preventDefault={reset}
       >
         Reset
       </button>

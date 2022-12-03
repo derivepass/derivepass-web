@@ -11,9 +11,12 @@
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
+    "@felte/reporter-svelte": "^1.1.4",
+    "@felte/validator-zod": "^1.0.12",
     "@sveltejs/vite-plugin-svelte": "^1.1.0",
     "@tsconfig/svelte": "^3.0.0",
     "autoprefixer": "^10.4.13",
+    "felte": "^1.2.6",
     "postcss": "^8.4.19",
     "svelte": "^3.52.0",
     "svelte-check": "^2.9.2",

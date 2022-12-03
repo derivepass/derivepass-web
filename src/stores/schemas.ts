@@ -2,9 +2,7 @@ import { z } from 'zod';
 
 import { check as isValidRange } from '../util/ranges';
 
-export const ApplicationSchema = z.object({
-  id: z.string().min(1),
-  v: z.number().positive(),
+export const ApplicationDataSchema = z.object({
   domain: z.string()
     .trim()
     .min(1, 'Domain name can\'t be empty')
@@ -34,18 +32,11 @@ export const ApplicationSchema = z.object({
   passwordLen: z.number().positive(),
 });
 
-export type Application = z.infer<typeof ApplicationSchema>;
+export type ApplicationData = z.infer<typeof ApplicationDataSchema>;
 
-export function isApplicationUnchanged(
-  a: Application,
-  b: Application,
-): boolean {
-  return a.id === b.id &&
-    a.v === b.v &&
-    a.domain === b.domain &&
-    a.login === b.login &&
-    a.revision === b.revision &&
-    a.allowedChars === b.allowedChars &&
-    a.requiredChars === b.requiredChars &&
-    a.passwordLen === b.passwordLen;
-}
+export const ApplicationSchema = z.object({
+  id: z.string().min(1),
+  v: z.number().positive(),
+}).and(ApplicationDataSchema);
+
+export type Application = z.infer<typeof ApplicationSchema>;
