@@ -18,7 +18,7 @@
 </script>
 
 <form
-  class="flex items-center"
+  class="flex items-center rounded focus-within:ring"
   autocomplete="off"
   on:submit|preventDefault={() => {}}
 >
