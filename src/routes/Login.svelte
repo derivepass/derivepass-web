@@ -1,9 +1,21 @@
 <script lang="ts">
+  import { push } from 'svelte-spa-router';
+
   import FormField from '../components/FormField.svelte';
+  import { computeKeys } from '../util/crypto';
+  import { keys } from '../stores/crypto';
 
   let password = '';
+  let isComputing = false;
 
   function onSubmit() {
+    isComputing = true;
+
+    setTimeout(() => {
+      isComputing = false;
+      $keys = computeKeys(password);
+      push('/applications');
+    }, 0);
   }
 </script>
 
@@ -13,6 +25,7 @@
     label="Enter your Master Password"
     hint="Used for decrypting storage and computing passwords"
     bind:value={password}
+    disabled={isComputing}
   />
 
   <input
@@ -20,6 +33,6 @@
       disabled:bg-blue-400"
     type="submit"
     value="Decrypt"
-    disabled
+    disabled={!password || isComputing}
     />
 </form>

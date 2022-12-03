@@ -1,7 +1,7 @@
 import init, { derive, encrypt, decrypt } from 'scrypt-crate';
 
-import { flatten } from './util/ranges';
-import type { Application } from './stores/schemas';
+import { flatten } from './ranges';
+import type { Application } from '../stores/schemas';
 
 const encoder = new TextEncoder();
 
@@ -62,11 +62,6 @@ export type PasswordOptions = Readonly<{
   requiredChars: string;
   allowedChars: string;
   passwordLen: number;
-}>;
-
-export type ComputePasswordOptions = PasswordOptions & Readonly<{
-  master: string;
-  domain: string;
 }>;
 
 type PasswordRanges = Readonly<{
@@ -164,7 +159,7 @@ export function isDefaultOptions({
 }
 
 export function computePassword(
-  master: string,
+  { master }: Keys,
   app: Application,
 ): string {
   const source = `${app.domain}/${app.login}` +
@@ -195,6 +190,7 @@ export function computePassword(
 }
 
 export type Keys = Readonly<{
+  master: string;
   aes: Uint8Array;
   hmac: Uint8Array;
 }>;
@@ -207,6 +203,7 @@ export function computeKeys(master: string): Keys {
     AES_KEY_SIZE + MAC_KEY_SIZE);
 
   return {
+    master,
     aes: buf.slice(0, AES_KEY_SIZE),
     hmac: buf.slice(AES_KEY_SIZE),
   };

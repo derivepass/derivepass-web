@@ -3,12 +3,12 @@
 </script>
 
 <form
-  class="flex flex-wrap items-center"
+  class="flex items-center"
   autocomplete="off"
   on:submit|preventDefault={() => {}}
 >
   <input
-    class="grow px-4 py-2 rounded-l border focus:outline-none"
+    class="grow px-4 py-2 min-w-0 rounded-l border focus:outline-none"
     type="search"
     autocomplete="off"
     placeholder="Filter applications"

@@ -6,6 +6,7 @@
   export let label: string;
   export let hint: string | undefined = undefined;
   export let required = false;
+  export let disabled = false;
 
   export let value: string | number | undefined = undefined;
 
@@ -30,7 +31,8 @@
     autocorrect="off"
     autocapitalize="none"
     {required}
-    aria-required="true"
+    {disabled}
+    aria-required={required}
     on:input={onInput}
     {value}
     />

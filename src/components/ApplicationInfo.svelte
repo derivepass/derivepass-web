@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { pop as goBack } from 'svelte-spa-router';
+  import { pop as goBack, replace } from 'svelte-spa-router';
   import { createForm } from 'felte';
   import { reporter } from '@felte/reporter-svelte';
   import { validator } from '@felte/validator-zod';
@@ -11,7 +11,8 @@
   } from '../stores/schemas';
   import FormField from '../components/FormField.svelte';
 
-  import { computePassword } from '../crypto';
+  import { keys } from '../stores/crypto';
+  import { computePassword } from '../util/crypto';
   import { SECOND } from '../util/constants';
 
   export let app: Application;
@@ -24,9 +25,6 @@
     Copied,
   }
 
-  // TODO(indutny): load it from store
-  const master = 'masterpassword';
-
   // State
   let isEditing = isNew;
   let isShowingExtra = false;
@@ -35,10 +33,16 @@
   let justCopiedTimer: NodeJS.Timeout | undefined;
 
   async function onComputeOrCopy() {
+    const presentKeys = $keys;
+    if (presentKeys === undefined) {
+      replace('/');
+      return;
+    }
+
     if (passwordState === PasswordState.Initial) {
       passwordState = PasswordState.Computing;
       setTimeout(() => {
-        password = computePassword(master, {
+        password = computePassword(presentKeys, {
           ...app,
           ...$data,
         });
