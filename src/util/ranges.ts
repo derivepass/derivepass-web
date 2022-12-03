@@ -36,3 +36,12 @@ export function flatten(str: string): ReadonlyArray<string> {
 
   return Array.from(new Set(str.split(''))).sort();
 }
+
+export function check(str: string): boolean {
+  try {
+    flatten(str);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}

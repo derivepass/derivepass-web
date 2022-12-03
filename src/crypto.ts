@@ -1,6 +1,7 @@
 import init, { derive, encrypt, decrypt } from 'scrypt-crate';
 
 import { flatten } from './util/ranges';
+import type { Application } from './stores/schemas';
 
 const encoder = new TextEncoder();
 
@@ -152,7 +153,7 @@ export const DEFAULT_OPTIONS: PasswordOptions = {
   passwordLen: 24,
 };
 
-export function isLegacyOptions({
+export function isDefaultOptions({
   allowedChars,
   requiredChars,
   passwordLen,
@@ -163,35 +164,31 @@ export function isLegacyOptions({
 }
 
 export function computePassword(
-  options: ComputePasswordOptions,
+  master: string,
+  app: Application,
 ): string {
-  const {
-    master,
-    domain,
-    allowedChars,
-    requiredChars,
-    passwordLen,
-  } = options;
+  const source = `${app.domain}/${app.login}` +
+    `${app.revision > 1 ? `#${app.revision}` : ''}`;
 
-  const allowed = flatten(allowedChars);
-  const required = flatten(requiredChars);
+  const allowed = flatten(app.allowedChars);
+  const required = flatten(app.requiredChars);
   const union = [...new Set([...allowed, ...required])].sort();
 
   const ranges = {
     allowed,
     required,
     union,
-    passwordLen,
+    passwordLen: app.passwordLen,
   };
 
   const bytes = Math.ceil(passwordEntropyBits(ranges) / 8);
   const raw = derive(
     SCRYPT_R, SCRYPT_N, SCRYPT_P,
     encoder.encode(master),
-    encoder.encode(domain),
+    encoder.encode(source),
     bytes);
 
-  if (isLegacyOptions(options)) {
+  if (isDefaultOptions(app)) {
     return toLegacyPassword(raw);
   }
   return toPassword(raw, ranges);
