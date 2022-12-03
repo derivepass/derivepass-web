@@ -1,9 +1,14 @@
 <script lang="ts">
   import FormField from '../components/FormField.svelte';
 
+  import { computePassword } from '../crypto';
+
   export let params: { id: string };
 
   const isNew = params.id === 'new';
+
+  // TODO(indutny): load it from store
+  const master = 'masterpassword';
 
   let domain = 'signal.org';
   let login = 'indutny';
@@ -16,6 +21,17 @@
   let isEditing = true;
   let isShowingExtra = true;
   let hasChanges = false;
+
+  function onCompute() {
+    const password = computePassword({
+      master,
+      domain: `${domain}/${login}${revision > 1 ? `#${revision}` : ''}`,
+      requiredChars,
+      allowedChars,
+      passwordLen,
+    });
+    console.log(password);
+  }
 
   function onSave() {
   }
@@ -33,8 +49,10 @@
 
 <section class="mt-2 mb-4">
   <button
+    on:click|preventDefault={onCompute}
     class="mt-2 mr-2 px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
-      disabled:bg-blue-400">
+      disabled:bg-blue-400"
+  >
     Compute password
   </button>
   <button class="mr-2" on:click|preventDefault={toggleEditing}>Edit</button>
