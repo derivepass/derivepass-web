@@ -4,4 +4,9 @@
   export let size = 16;
 </script>
 
-<img src={src} class="inline-block animate-spin" width={size} height={size}/>
+<img
+  src={src}
+  class="inline-block animate-spin"
+  width={size}
+  height={size}
+  alt="Spinner"/>
