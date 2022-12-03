@@ -1,12 +1,8 @@
 extern crate dumb_crypto;
 extern crate wasm_bindgen;
-extern crate wee_alloc;
 
 use dumb_crypto::{aes, aes_cbc, hmac, scrypt, sha256};
 use wasm_bindgen::prelude::*;
-
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[inline]
 pub fn set_panic_hook() {}
