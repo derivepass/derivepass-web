@@ -18,7 +18,8 @@
 </script>
 
 <form
-  class="flex items-center rounded focus-within:ring"
+  class="flex items-center rounded focus-within:outline-2 focus-within:outline
+    outline-blue-500"
   autocomplete="off"
   on:submit|preventDefault={() => {}}
 >

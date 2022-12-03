@@ -23,8 +23,8 @@
   <p class="mb-2">{label}</p>
 
   <input
-    class="w-full p-2 rounded border aria-[invalid]:border-red-500
-      aria-[invalid]:outline-none"
+    class="w-full p-2 rounded border
+      outline-2 aria-[invalid]:outline aria-[invalid]:outline-red-500"
     {name}
     {type}
     autocomplete="off"
