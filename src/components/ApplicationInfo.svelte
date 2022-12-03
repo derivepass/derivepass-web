@@ -106,7 +106,7 @@
     {#if passwordState === PasswordState.Initial}
       Compute password
     {:else if passwordState === PasswordState.Computing}
-      <div class="flex gap-1">
+      <div class="flex gap-2 items-center">
         <Spinner/> Computing...
       </div>
     {:else if passwordState === PasswordState.Computed}
