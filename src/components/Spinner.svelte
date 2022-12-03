@@ -9,4 +9,4 @@
   class="inline-block animate-spin"
   width={size}
   height={size}
-  alt="Spinner"/>
+  alt=""/>
