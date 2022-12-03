@@ -1,11 +1,12 @@
 [package]
-name = "derivepass"
-description = "derivepass bindings"
+name = "scrypt-crate"
+description = "scrypt bindings"
 version = "1.0.1"
 authors = ["Fedor Indutny <fedor@indutny.com>"]
 categories = ["cryptography"]
 keywords = ["crypto","scrypt"]
 license = "MIT"
+repository = "https://github.com/derivepass/derivepass-web"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

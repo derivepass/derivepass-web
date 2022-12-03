@@ -1,6 +1,7 @@
 <script lang="ts">
   import Router, { replace } from 'svelte-spa-router';
 
+  import { initPromise as scryptPromise } from './scrypt';
   import logo from './assets/logo.svg';
 
   import About from './routes/About.svelte';
@@ -40,7 +41,11 @@
 </nav>
 
 <div class="container mx-auto max-w-screen-md p-4">
-  <Router {routes} on:conditionsFailed={conditionsFailed}/>
+  {#await scryptPromise then}
+    <Router {routes} on:conditionsFailed={conditionsFailed}/>
+  {:catch error}
+    <p class="text-red-500">Failed to initalize cryptograph: {error.message}</p>
+  {/await}
 </div>
 
 <style>
