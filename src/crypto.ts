@@ -2,6 +2,8 @@ import init, { derive, encrypt, decrypt } from 'scrypt-crate';
 
 import { flatten } from './util/ranges';
 
+const encoder = new TextEncoder();
+
 const SCRYPT_R = 8;
 const SCRYPT_N = 32768;
 const SCRYPT_P = 4;
@@ -11,7 +13,7 @@ const IV_SIZE = 16;
 const MAC_KEY_SIZE = 64;
 const MAC_SIZE = 32;
 
-const encoder = new TextEncoder();
+const SCRYPT_AES_DOMAIN = encoder.encode('derivepass/aes');
 
 const alpha = (ch: number): number => {
   // 0-9
@@ -193,6 +195,24 @@ export function computePassword(
     return toLegacyPassword(raw);
   }
   return toPassword(raw, ranges);
+}
+
+export type Keys = Readonly<{
+  aes: Uint8Array;
+  hmac: Uint8Array;
+}>;
+
+export function computeKeys(master: string): Keys {
+  const buf = derive(
+    SCRYPT_R, SCRYPT_N, SCRYPT_P,
+    encoder.encode(master),
+    SCRYPT_AES_DOMAIN,
+    AES_KEY_SIZE + MAC_KEY_SIZE);
+
+  return {
+    aes: buf.slice(0, AES_KEY_SIZE),
+    hmac: buf.slice(AES_KEY_SIZE),
+  };
 }
 
 export const initPromise = init();

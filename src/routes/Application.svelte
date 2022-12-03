@@ -1,9 +1,19 @@
 <script lang="ts">
+  import { pop as goBack } from 'svelte-spa-router';
+
   import FormField from '../components/FormField.svelte';
 
   import { computePassword } from '../crypto';
+  import { SECOND } from '../util/constants';
 
   export let params: { id: string };
+
+  enum PasswordState {
+    Initial,
+    Computing,
+    Computed,
+    Copied,
+  }
 
   const isNew = params.id === 'new';
 
@@ -18,19 +28,42 @@
   let passwordLen = 24;
 
   // State
-  let isEditing = true;
+  let isEditing = isNew;
   let isShowingExtra = true;
   let hasChanges = false;
+  let password: string | undefined;
+  let passwordState = PasswordState.Initial;
+  let justCopiedTimer: NodeJS.Timeout | undefined;
 
-  function onCompute() {
-    const password = computePassword({
-      master,
-      domain: `${domain}/${login}${revision > 1 ? `#${revision}` : ''}`,
-      requiredChars,
-      allowedChars,
-      passwordLen,
-    });
-    console.log(password);
+  async function onComputeOrCopy() {
+    if (passwordState === PasswordState.Initial) {
+      passwordState = PasswordState.Computing;
+      setTimeout(() => {
+        password = computePassword({
+          master,
+          domain: `${domain}/${login}${revision > 1 ? `#${revision}` : ''}`,
+          requiredChars,
+          allowedChars,
+          passwordLen,
+        });
+        passwordState = PasswordState.Computed;
+      }, 0);
+      return;
+    }
+
+    navigator.clipboard.writeText(password);
+
+    if (justCopiedTimer !== undefined) {
+      clearTimeout(justCopiedTimer);
+    }
+
+    passwordState = PasswordState.Copied;
+    justCopiedTimer = setTimeout(() => {
+      justCopiedTimer = undefined;
+      passwordState = PasswordState.Computed;
+    }, 5 * SECOND);
+
+    return;
   }
 
   function onSave() {
@@ -38,6 +71,10 @@
 
   function toggleEditing() {
     isEditing = !isEditing;
+  }
+
+  function onBack() {
+    goBack();
   }
 
   function toggleExtra() {
@@ -49,14 +86,23 @@
 
 <section class="mt-2 mb-4">
   <button
-    on:click|preventDefault={onCompute}
+    on:click|preventDefault={onComputeOrCopy}
+    disabled={passwordState === PasswordState.Computing}
     class="mt-2 mr-2 px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
       disabled:bg-blue-400"
   >
-    Compute password
+    {#if passwordState === PasswordState.Initial}
+      Compute password
+    {:else if passwordState === PasswordState.Computing}
+      Computing...
+    {:else if passwordState === PasswordState.Computed}
+      Copy password
+    {:else}
+      Copied
+    {/if}
   </button>
   <button class="mr-2" on:click|preventDefault={toggleEditing}>Edit</button>
-  <button>Back</button>
+  <button on:click|preventDefault={onBack}>Back</button>
 </section>
 
 {#if isEditing}
