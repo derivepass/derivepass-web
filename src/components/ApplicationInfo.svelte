@@ -10,6 +10,7 @@
     ApplicationDataSchema,
   } from '../stores/schemas';
   import FormField from '../components/FormField.svelte';
+  import Spinner from '../components/Spinner.svelte';
 
   import { keys } from '../stores/crypto';
   import { computePassword } from '../util/crypto';
@@ -95,17 +96,19 @@
 
 <h2 class="text-2xl"><b>{$data.domain}</b>/{$data.login}</h2>
 
-<section class="mt-2 mb-4">
+<section class="mt-2 mb-4 flex gap-1 content-center">
   <button
     on:click|preventDefault={onComputeOrCopy}
     disabled={passwordState === PasswordState.Computing}
-    class="mt-2 mr-2 px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
+    class="mr-2 px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
       disabled:bg-blue-400"
   >
     {#if passwordState === PasswordState.Initial}
       Compute password
     {:else if passwordState === PasswordState.Computing}
-      Computing...
+      <div class="flex gap-1">
+        <Spinner/> Computing...
+      </div>
     {:else if passwordState === PasswordState.Computed}
       Copy password
     {:else}

@@ -2,6 +2,7 @@
   import { push } from 'svelte-spa-router';
 
   import FormField from '../components/FormField.svelte';
+  import Spinner from '../components/Spinner.svelte';
   import { computeKeys } from '../util/crypto';
   import { keys } from '../stores/crypto';
 
@@ -28,11 +29,15 @@
     disabled={isComputing}
   />
 
-  <input
+  <button
     class="mt-4 px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
-      disabled:bg-blue-400"
+      disabled:bg-blue-400 flex gap-2"
     type="submit"
-    value="Decrypt"
     disabled={!password || isComputing}
-    />
+  >
+    {#if isComputing}
+      <Spinner/>
+    {/if}
+    Decrypt Storage
+  </button>
 </form>
