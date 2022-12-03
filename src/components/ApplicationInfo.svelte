@@ -112,103 +112,101 @@
   <button on:click|preventDefault={onBack}>Back</button>
 </section>
 
-{#if isEditing}
-  <form use:form>
-    <FormField
-      on:input
-      on:change
-      on:focus
-      on:blur
-      name="domain"
-      label="Domain name"
-      hint="Examples: google.com, fb.com, etc"/>
-    <FormField
-      on:input
-      on:change
-      on:focus
-      on:blur
-      name="login"
-      type="email"
-      label="Username"
-      hint="Examples: my_user_name, derivepass82"/>
-    <FormField
-      on:input
-      on:change
-      on:focus
-      on:blur
-      name="revision"
-      type="number"
-      label="Revision"
-      hint="Increment this by one to change the password"/>
+<form use:form class:hidden={!isEditing}>
+  <FormField
+    on:input
+    on:change
+    on:focus
+    on:blur
+    name="domain"
+    label="Domain name"
+    hint="Examples: google.com, fb.com, etc"/>
+  <FormField
+    on:input
+    on:change
+    on:focus
+    on:blur
+    name="login"
+    type="email"
+    label="Username"
+    hint="Examples: my_user_name, derivepass82"/>
+  <FormField
+    on:input
+    on:change
+    on:focus
+    on:blur
+    name="revision"
+    type="number"
+    label="Revision"
+    hint="Increment this by one to change the password"/>
 
+  <button
+    type="button"
+    class="my-2 px-4 py-2 rounded border border-red-500 hover:border-red-600
+      text-red-500 hover:text-red-600"
+    on:click|preventDefault={toggleExtra}
+  >
+    Extra
+  </button>
+
+  <section class="my-2" class:hidden={!isShowingExtra}>
+    <p class="text-red-500 my-2">
+      Most applications don't require editing options below.
+    </p>
+    <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
+      name="allowedChars"
+      label="Allowed characters"
+      hint="Characters that can be present in the password"/>
+    <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
+      name="requiredChars"
+      label="Required characters"
+      hint="Characters that must be present in the password"/>
+    <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
+      name="passwordLen"
+      type="number"
+      label="Password length"/>
+  </section>
+
+  <section class="flex my-2">
     <button
-      type="button"
-      class="my-2 px-4 py-2 rounded border border-red-500 hover:border-red-600
-        text-red-500 hover:text-red-600"
-      on:click|preventDefault={toggleExtra}
+      type="submit"
+      disabled={$isValid && !$isDirty}
+      class="px-4 py-2 rounded-l bg-blue-500 hover:bg-blue-600 text-white
+        disabled:bg-blue-400"
     >
-      Extra
+      Save
+    </button>
+    <button
+      type="reset"
+      disabled={!$isDirty}
+      class="px-4 py-2 last:rounded-r bg-gray-500 hover:bg-gray-600 text-white
+        disabled:bg-gray-400"
+      on:click|preventDefault={reset}
+    >
+      Reset
     </button>
 
-    <section class="my-2" class:hidden={!isShowingExtra}>
-      <p class="text-red-500 my-2">
-        Most applications don't require editing options below.
-      </p>
-      <FormField
-        on:input
-        on:change
-        on:focus
-        on:blur
-        name="allowedChars"
-        label="Allowed characters"
-        hint="Characters that can be present in the password"/>
-      <FormField
-        on:input
-        on:change
-        on:focus
-        on:blur
-        name="requiredChars"
-        label="Required characters"
-        hint="Characters that must be present in the password"/>
-      <FormField
-        on:input
-        on:change
-        on:focus
-        on:blur
-        name="passwordLen"
-        type="number"
-        label="Password length"/>
-    </section>
-
-    <section class="flex my-2">
+    {#if !isNew}
       <button
-        type="submit"
-        disabled={$isValid && !$isDirty}
-        class="px-4 py-2 rounded-l bg-blue-500 hover:bg-blue-600 text-white
-          disabled:bg-blue-400"
+        type="button"
+        class="px-4 py-2 last:rounded-r bg-red-500 hover:bg-red-600 text-white
+          disabled:bg-red-400"
+        on:click|preventDefault={onDelete}
       >
-        Save
+        Delete
       </button>
-      <button
-        type="reset"
-        disabled={!$isDirty}
-        class="px-4 py-2 last:rounded-r bg-gray-500 hover:bg-gray-600 text-white
-          disabled:bg-gray-400"
-        on:click|preventDefault={reset}
-      >
-        Reset
-      </button>
-
-      {#if !isNew}
-        <button
-          type="button"
-          class="px-4 py-2 last:rounded-r bg-red-500 hover:bg-red-600 text-white
-            disabled:bg-red-400"
-          on:click|preventDefault={onDelete}
-        >
-          Delete
-        </button>
-      {/if}
-    </section>
-  </form>
-{/if}
+    {/if}
+  </section>
+</form>
