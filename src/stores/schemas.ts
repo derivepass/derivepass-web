@@ -72,6 +72,10 @@ export const SyncSettingsSchema = z.object({
 
 export type SyncSettings = z.infer<typeof SyncSettingsSchema>;
 
+export const AuthTokenResponseSchema = z.object({
+  token: z.string(),
+});
+
 //
 // Compatibility with previous version
 //

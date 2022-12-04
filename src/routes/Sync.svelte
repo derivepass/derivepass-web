@@ -1,69 +1,115 @@
 <script lang="ts">
   import { createForm } from 'felte';
-  import { reporter } from '@felte/reporter-svelte';
-  import { validator } from '@felte/validator-zod';
 
   import FormField from '../components/FormField.svelte';
-  import { type SyncSettings, SyncSettingsSchema } from '../stores/schemas';
   import { settings } from '../stores/sync';
+  import { AuthTokenResponseSchema } from '../stores/schemas';
+  import { fromString as base64FromString } from '../util/b64';
 
-  const {
-    form,
-    isDirty,
-    isValid,
-  } = createForm<SyncSettings>({
-    initialValues: $settings,
-    onSubmit(newSettings) {
-      $settings = newSettings;
-      $isDirty = false;
+  type Auth = Readonly<{
+    host: string;
+    username: string;
+    password: string;
+  }>;
+
+  let error: string | undefined;
+
+  const { form } = createForm<Auth>({
+    initialValues: {
+      host: $settings?.host ?? '',
+      username: '',
+      password: '',
     },
-    extend: [
-      validator({ schema: SyncSettingsSchema }),
-      reporter,
-    ],
+    async onSubmit(auth) {
+      error = undefined;
+
+      const auth64 = base64FromString(`${auth.username}:${auth.password}`);
+      const res = await fetch(`https://${auth.host}/user/token`, {
+        method: 'PUT',
+        headers: {
+          authorization: `Basic ${auth64}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error('Request failed');
+      }
+      const { token } = AuthTokenResponseSchema.parse(await res.json());
+
+      $settings = {
+        host: auth.host,
+        token,
+      };
+    },
+    onError() {
+      error = 'Invalid credentials or unreachable server';
+    }
   });
 
-  function onSync() {
+  function onUnlink() {
+    $settings = undefined;
   }
 </script>
 
-<h2 class="text-2xl mb-4">Setup Synchronization</h2>
+{#if $settings}
+  <h2 class="text-3xl mb-4">Synchronization</h2>
 
-<form use:form>
-  <FormField
-    on:input
-    on:change
-    on:focus
-    on:blur
-    name="host"
-    label="Storage server hostname"
-    placeholder="storage.example.com"/>
-  <FormField
-    on:input
-    on:change
-    on:focus
-    on:blur
-    name="token"
-    type="password"
-    label="Auth Token"/>
+  <p class="my-2">
+    Synchronizing with <b>{$settings.host}</b>.
+  </p>
 
-  <section class="flex my-2">
+  <button
+    type="reset"
+    class="mt-4 px-4 py-2 rounded bg-red-500 hover:bgred-600 text-white
+      disabled:bg-red-400"
+    on:click|preventDefault={onUnlink}
+  >
+    Unlink
+  </button>
+{:else}
+  <h2 class="text-3xl mb-4">Setup Synchronization</h2>
+
+  <form use:form>
+    <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
+      required
+      name="host"
+      label="Storage server hostname"
+      placeholder="storage.example.com"/>
+    <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
+      required
+      name="username"
+      label="Username"
+      placeholder="me@my.server"/>
+    <FormField
+      on:input
+      on:change
+      on:focus
+      on:blur
+      required
+      name="password"
+      type="password"
+      label="Password"/>
+
+    {#if error !== undefined}
+      <p class="my-2 text-red-500">
+        {error}
+      </p>
+    {/if}
+
     <button
       type="submit"
-      disabled={$isValid && !$isDirty}
-      class="px-4 py-2 rounded-l bg-blue-500 hover:bg-blue-600 text-white
+      class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
         disabled:bg-blue-400"
     >
-      Save
+      Login
     </button>
-    <button
-      type="button"
-      disabled={!$isValid}
-      class="px-4 py-2 last:rounded-r bg-gray-500 hover:bg-gray-600 text-white
-        disabled:bg-gray-400"
-      on:click|preventDefault={onSync}
-    >
-      Sync Now
-    </button>
-  </section>
-</form>
+  </form>
+{/if}
