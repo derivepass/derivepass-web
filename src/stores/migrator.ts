@@ -74,7 +74,6 @@ export function migrator(
         }
 
         const encrypted = encryptApplication($keys, {
-          // Ignore old uuid
           domain,
           login,
           revision,
@@ -87,6 +86,7 @@ export function migrator(
           return [
             ...list,
             {
+              // Ignore old uuid
               id: nanoid(),
               version: VERSION,
               encrypted,
