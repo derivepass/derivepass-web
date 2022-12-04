@@ -7,19 +7,20 @@ import {
   encryptApplication,
   decryptApplication,
 } from '../util/crypto';
-import type {
-  Application,
-  ApplicationData,
-  DecryptedApplication,
+import {
+  type Application,
+  type ApplicationData,
+  type DecryptedApplication,
+  VERSION,
 } from './schemas';
 import { keys } from './crypto';
 import { sync } from './sync';
-
-const VERSION = 1;
+import { migrator } from './migrator';
 
 const store = writable<ReadonlyArray<DecryptedApplication>>([]);
 
 sync(store);
+migrator(store);
 
 // Erase "encrypted" key and decrypt on apps on any key change.
 keys.subscribe($keys => {

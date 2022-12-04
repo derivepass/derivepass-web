@@ -14,8 +14,9 @@ export function sync(
   const initialData = new Array<EncryptedApplication>();
 
   for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (!key?.startsWith(PREFIX)) {
+    const key = localStorage.key(i) ?? '';
+
+    if (!key.startsWith(PREFIX)) {
       continue;
     }
 

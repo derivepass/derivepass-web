@@ -2,6 +2,8 @@ import { z } from 'zod';
 
 import { check as isValidRange } from '../util/ranges';
 
+export const VERSION = 1;
+
 export const ApplicationDataSchema = z.object({
   domain: z.string()
     .trim()
@@ -36,7 +38,7 @@ export type ApplicationData = z.infer<typeof ApplicationDataSchema>;
 
 const HeaderSchema = z.object({
   id: z.string().min(1),
-  version: z.literal(1),
+  version: z.literal(VERSION),
 });
 
 export const ApplicationSchema = HeaderSchema.and(ApplicationDataSchema);
@@ -57,3 +59,23 @@ export const DecryptedApplicationSchema = EncryptedApplicationSchema.and(
 );
 
 export type DecryptedApplication = z.infer<typeof DecryptedApplicationSchema>;
+
+export const LegacyApplicationSchema = z.object({
+  uuid: z.string(),
+  changedAt: z.number(),
+  removed: z.boolean(),
+
+  // Encrypted individually with either:
+  // - 'v1:' prefix for AES+HMAC
+  // - no prefix for AES
+  domain: z.string(),
+  login: z.string(),
+  revision: z.string(),
+  options: z.string(),
+});
+
+export const LegacyOptionsSchema = z.object({
+  allowed: z.string().trim(),
+  required: z.string().trim(),
+  maxLength: z.number().or(z.string()),
+});

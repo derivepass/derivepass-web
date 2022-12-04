@@ -1,4 +1,4 @@
-import init, { derive, encrypt, decrypt } from 'scrypt-crate';
+import init, { derive, encrypt, decrypt, decrypt_legacy } from 'scrypt-crate';
 
 import { flatten } from './ranges';
 import {
@@ -231,6 +231,16 @@ export function decryptApplication({
 }: Keys, hex: string): ApplicationData {
   const json = JSON.parse(decoder.decode(decrypt(aes, hmac, fromHex(hex))));
   return ApplicationDataSchema.parse(json);
+}
+
+export function decryptLegacyString({
+  aes,
+  hmac,
+}: Keys, value: string): string {
+  if (value.startsWith('v1:')) {
+    return decoder.decode(decrypt(aes, hmac, fromHex(value.slice(3))));
+  }
+  return decoder.decode(decrypt_legacy(aes, fromHex(value)));
 }
 
 export const initPromise = init();
