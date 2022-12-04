@@ -1,5 +1,6 @@
 import type { Writable } from 'svelte/store';
 import { nanoid } from 'nanoid';
+import createDebug from 'debug';
 
 import {
   decryptLegacyString,
@@ -13,6 +14,8 @@ import {
 } from '../schemas';
 import { keys } from '../crypto';
 
+const debug = createDebug('dp:migrator');
+
 const LEGACY_PREFIX = 'derivepass/production/';
 
 export function migrator(
@@ -25,6 +28,7 @@ export function migrator(
 
     // Every time keys change - try to decrypt old records and migrate them
     // to new ones.
+    let migrated = 0;
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i) ?? '';
 
@@ -96,9 +100,13 @@ export function migrator(
         });
 
         localStorage.removeItem(key);
+
+        migrated++;
       } catch {
         // Ignore
       }
     }
+
+    debug('migrated %d records', migrated);
   });
 }

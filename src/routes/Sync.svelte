@@ -7,6 +7,7 @@
     remoteState,
     authorize,
     unlink,
+    sync,
   } from '../stores/remoteSync';
 
   let error: string | undefined;
@@ -26,9 +27,6 @@
       error = 'Invalid credentials or unreachable server';
     }
   });
-
-  async function onSyncNow(): Promise<void> {
-  }
 </script>
 
 {#if $remoteState}
@@ -48,7 +46,7 @@
       type="button"
       class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
         disabled:bg-blue-400"
-      on:click|preventDefault={onSyncNow}
+      on:click|preventDefault={sync}
     >
       Sync Now
     </button>
@@ -57,7 +55,7 @@
       type="reset"
       class="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white
         disabled:bg-red-400"
-      on:click|preventDefault={unlink}
+      on:click|preventDefault={() => unlink($remoteState)}
     >
       Unlink
     </button>

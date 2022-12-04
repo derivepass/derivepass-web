@@ -53,6 +53,13 @@ export const StoredApplicationSchema = HeaderSchema.and(z.object({
 
 export type StoredApplication = z.infer<typeof StoredApplicationSchema>;
 
+export const RemoteApplicationSchema = HeaderSchema.and(z.object({
+  encrypted: z.string(),
+  removed: z.optional(z.boolean()),
+}));
+
+export type RemoteApplication = z.infer<typeof RemoteApplicationSchema>;
+
 export const HydratedApplicationSchema = StoredApplicationSchema.and(
   z.object({
     decrypted: z.optional(ApplicationDataSchema),
@@ -70,12 +77,25 @@ export const RemoteSyncStateSchema = z.object({
   token: z.string(),
   lastModifiedAt: z.number(),
   lastSyncedAt: z.number(),
+  localLastModifiedAt: z.number(),
 });
 
 export type RemoteSyncState = z.infer<typeof RemoteSyncStateSchema>;
 
 export const AuthTokenResponseSchema = z.object({
   token: z.string(),
+});
+
+export const GetObjectsResponseSchema = z.object({
+  objects: z.array(z.object({
+    id: z.string(),
+    data: z.string(),
+    modifiedAt: z.number(),
+  })),
+});
+
+export const PutObjectsResponseSchema = z.object({
+  modifiedAt: z.number(),
 });
 
 //

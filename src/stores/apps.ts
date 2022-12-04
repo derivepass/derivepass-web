@@ -14,12 +14,15 @@ import {
   VERSION,
 } from './schemas';
 import { keys } from './crypto';
-import { localSync } from './util/localSync';
+import { initLocalSync } from './util/localSync';
+import { initRemoteSync } from './remoteSync';
 import { migrator } from './util/migrator';
 
 const store = writable<ReadonlyArray<HydratedApplication>>([]);
 
-localSync(store);
+const { lastModifiedAt } = initLocalSync(store);
+
+initRemoteSync(store, lastModifiedAt);
 migrator(store);
 
 // Erase "encrypted" key and decrypt on apps on any key change.
@@ -97,7 +100,7 @@ export const apps = {
             version: entry.version,
             encrypted: '',
             removed: true,
-            modifiedAt: Date.now(),
+            modifiedAt: lastModifiedAt.next(),
           };
         }
         return entry;
@@ -112,7 +115,7 @@ export const apps = {
       version,
       decrypted: data,
       encrypted,
-      modifiedAt: Date.now(),
+      modifiedAt: lastModifiedAt.next(),
     };
 
     store.update(list => {
@@ -121,12 +124,7 @@ export const apps = {
       const modifiedList = list.map(entry => {
         if (entry.id === newEntry.id) {
           found = true;
-          return {
-            ...newEntry,
-
-            // Make sure that we always increment `modifiedAt` on updates.
-            modifiedAt: Math.max(entry.modifiedAt + 1, newEntry.modifiedAt),
-          };
+          return newEntry;
         }
         return entry;
       });
