@@ -2,16 +2,24 @@
   import { push, replace } from 'svelte-spa-router';
   import ApplicationInfo from '../components/ApplicationInfo.svelte';
   import { apps } from '../stores/apps';
+  import { keys } from '../stores/crypto';
   import type { Application } from '../stores/schemas';
 
   export let params: { id: string };
 
   $: isNew = params.id === 'new';
 
-  $: app = isNew ? apps.getTemplate() : apps.getById(params.id);
+  $: app = isNew ?
+    apps.getTemplate() :
+    $apps.find(app => app.id === params.id);
 
   function onSubmit({ detail: newApp }: CustomEvent<Application>) {
-    apps.save(newApp);
+    const currentKeys = $keys;
+    if (currentKeys === undefined) {
+      push('/');
+      return;
+    }
+    apps.save(currentKeys, newApp);
     if (isNew) {
       push(`/applications/${newApp.id}`);
     }

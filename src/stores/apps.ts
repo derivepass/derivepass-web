@@ -1,20 +1,48 @@
 import { writable, derived } from 'svelte/store';
 import { nanoid } from 'nanoid';
 
-import type { Application } from './schemas';
-import { DEFAULT_OPTIONS } from '../util/crypto';
+import {
+  type Keys,
+  DEFAULT_OPTIONS,
+  encryptApplication,
+  decryptApplication,
+} from '../util/crypto';
+import type {
+  Application,
+  ApplicationData,
+  DecryptedApplication,
+} from './schemas';
+import { keys } from './crypto';
+import { sync } from './sync';
 
 const VERSION = 1;
 
-export type StoreEntry = Readonly<{
-  application: Application;
-  modifiedAt: Date;
-}>;
+const store = writable<ReadonlyArray<DecryptedApplication>>([]);
 
-const store = writable<ReadonlyArray<StoreEntry>>([]);
+sync(store);
 
-let latestList: ReadonlyArray<StoreEntry>;
-store.subscribe(newList => latestList = newList);
+// Erase "encrypted" key and decrypt on apps on any key change.
+keys.subscribe($keys => {
+  store.update(list => {
+    return list.map(({ decrypted: _, encrypted, ...rest }) => {
+      let decrypted: ApplicationData | undefined;
+
+      if ($keys !== undefined) {
+        try {
+          decrypted = decryptApplication($keys, encrypted);
+        } catch {
+          // ignore
+        }
+      }
+
+      return {
+        decrypted,
+        encrypted,
+        ...rest,
+      };
+    });
+  });
+});
 
 export const apps = {
   subscribe: derived(
@@ -22,15 +50,26 @@ export const apps = {
     $store => {
       return $store
         .slice()
-        .sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())
-        .map(x => x.application);
+        .sort((a, b) => b.modifiedAt - a.modifiedAt)
+        .map(x => {
+          if (x.decrypted === undefined) {
+            return undefined;
+          }
+
+          return {
+            id: x.id,
+            version: x.version,
+            ...x.decrypted,
+          };
+        })
+        .filter((x): x is Application => x !== undefined);
     },
   ).subscribe,
 
   getTemplate(): Application {
     return {
-      v: VERSION,
       id: nanoid(),
+      version: VERSION,
 
       domain: '',
       login: '',
@@ -40,29 +79,29 @@ export const apps = {
     };
   },
 
-  getById(id: string): Application | undefined {
-    return latestList
-      .map(entry => entry.application)
-      .find(app => app.id === id);
-  },
-
   deleteById(id: string): void {
     store.update(list => {
-      return list.filter(({ application }) => application.id !== id);
+      return list.filter(entry => entry.id !== id);
     });
   },
 
-  save(data: Application): void {
+  save(keys: Keys, { id, version, ...data }: Application): void {
+    const encrypted = encryptApplication(keys, data);
+    const newEntry = {
+      id,
+      version,
+      decrypted: data,
+      encrypted,
+      modifiedAt: Date.now(),
+    };
+
     store.update(list => {
       let found = false;
 
       const modifiedList = list.map(entry => {
-        if (entry.application.id === data.id) {
+        if (entry.id === newEntry.id) {
           found = true;
-          return {
-            application: data,
-            modifiedAt: new Date(),
-          };
+          return newEntry;
         }
         return entry;
       });
@@ -73,10 +112,7 @@ export const apps = {
 
       return [
         ...list,
-        {
-          application: { ...data },
-          modifiedAt: new Date(),
-        },
+        newEntry,
       ];
     });
   },

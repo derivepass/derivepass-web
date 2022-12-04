@@ -1,9 +1,14 @@
 import init, { derive, encrypt, decrypt } from 'scrypt-crate';
 
 import { flatten } from './ranges';
-import type { Application } from '../stores/schemas';
+import {
+  type Application,
+  type ApplicationData,
+  ApplicationDataSchema,
+} from '../stores/schemas';
 
 const encoder = new TextEncoder();
+const decoder = new TextDecoder();
 
 const SCRYPT_R = 8;
 const SCRYPT_N = 32768;
@@ -12,7 +17,6 @@ const SCRYPT_P = 4;
 const AES_KEY_SIZE = 32;
 const IV_SIZE = 16;
 const MAC_KEY_SIZE = 64;
-const MAC_SIZE = 32;
 
 const SCRYPT_AES_DOMAIN = encoder.encode('derivepass/aes');
 
@@ -207,6 +211,26 @@ export function computeKeys(master: string): Keys {
     aes: buf.slice(0, AES_KEY_SIZE),
     hmac: buf.slice(AES_KEY_SIZE),
   };
+}
+
+export function encryptApplication({
+  aes,
+  hmac,
+}: Keys, application: ApplicationData): string {
+  const payload = encoder.encode(JSON.stringify(application));
+
+  const iv = new Uint8Array(IV_SIZE);
+  window.crypto.getRandomValues(iv);
+
+  return toHex(encrypt(aes, hmac, iv, payload));
+}
+
+export function decryptApplication({
+  aes,
+  hmac,
+}: Keys, hex: string): ApplicationData {
+  const json = JSON.parse(decoder.decode(decrypt(aes, hmac, fromHex(hex))));
+  return ApplicationDataSchema.parse(json);
 }
 
 export const initPromise = init();

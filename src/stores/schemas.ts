@@ -34,9 +34,26 @@ export const ApplicationDataSchema = z.object({
 
 export type ApplicationData = z.infer<typeof ApplicationDataSchema>;
 
-export const ApplicationSchema = z.object({
+const HeaderSchema = z.object({
   id: z.string().min(1),
-  v: z.number().positive(),
-}).and(ApplicationDataSchema);
+  version: z.literal(1),
+});
+
+export const ApplicationSchema = HeaderSchema.and(ApplicationDataSchema);
 
 export type Application = z.infer<typeof ApplicationSchema>;
+
+export const EncryptedApplicationSchema = HeaderSchema.and(z.object({
+  encrypted: z.string(),
+  modifiedAt: z.number(),
+}));
+
+export type EncryptedApplication = z.infer<typeof EncryptedApplicationSchema>;
+
+export const DecryptedApplicationSchema = EncryptedApplicationSchema.and(
+  z.object({
+    decrypted: z.optional(ApplicationDataSchema),
+  })
+);
+
+export type DecryptedApplication = z.infer<typeof DecryptedApplicationSchema>;
