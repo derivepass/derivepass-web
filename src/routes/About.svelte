@@ -2,8 +2,11 @@
   import { link } from 'svelte-spa-router';
 
   import logo from '../assets/logo.svg';
+  import { version, homepage } from '../../package.json';
 
   import ExternalLink from '../components/ExternalLink.svelte';
+
+  const year = new Date().getFullYear();
 </script>
 
 <container class="flex flex-row-reverse flex-wrap justify-center items-center text-center sm:text-start">
@@ -102,3 +105,12 @@
   </ExternalLink>
   algorithm to ensure the data integrity.
 </p>
+
+<footer class="text-xs text-right">
+  <p>
+    Copyright {year}, Fedor Indutny
+  </p>
+  <ExternalLink href={homepage}>
+    source code @ {version}
+  </ExternalLink>
+</footer>

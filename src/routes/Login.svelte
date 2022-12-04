@@ -12,7 +12,7 @@
   function onSubmit() {
     isComputing = true;
 
-    // TODO(indutny): why tick() doesn't work here?
+    // TODO(indutny): move to worker eventually.
     setTimeout(() => {
       isComputing = false;
       $keys = computeKeys(password);

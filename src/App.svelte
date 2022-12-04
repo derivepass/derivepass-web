@@ -16,21 +16,24 @@
 
   import Link from './components/Link.svelte';
 
+  const isLoggedIn = () => $keys !== undefined;
+  const isLoggedOut = () => $keys === undefined;
+
   const routes = {
     '/': About,
     '/about': About,
     '/sync': Sync,
     '/login': wrap({
       component: Login,
-      conditions: [() => $keys === undefined],
+      conditions: [isLoggedOut],
     }),
     '/applications': wrap({
       component: ApplicationList,
-      conditions: [() => $keys !== undefined],
+      conditions: [isLoggedIn],
     }),
     '/applications/:id': wrap({
       component: Application,
-      conditions: [() => $keys !== undefined],
+      conditions: [isLoggedIn],
     }),
     '/logout': Logout,
 

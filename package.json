@@ -1,8 +1,21 @@
 {
   "name": "derivepass-web",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/derivepass/derivepass-web.git"
+  },
+  "keywords": [
+    "derivepass",
+    "web"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/derivepass/derivepass-web/issues"
+  },
+  "homepage": "https://github.com/derivepass/derivepass-web#readme",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

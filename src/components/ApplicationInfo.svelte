@@ -63,7 +63,7 @@
     if (passwordState === PasswordState.Initial) {
       passwordState = PasswordState.Computing;
 
-      // TODO(indutny): why tick() doesn't work here?
+      // TODO(indutny): move to worker eventually.
       setTimeout(() => {
         password = computePassword(presentKeys, {
           ...app,
@@ -132,7 +132,6 @@
   }
 
   function onBack() {
-    // TODO(indutny): confirm saving
     push('/applications');
   }
 
@@ -147,11 +146,11 @@
   <h2 class="text-2xl"><b>{$data.domain}</b>/{$data.login}</h2>
 {/if}
 
-<section class="mt-2 mb-4 flex gap-1 content-center">
+<section class="mt-2 mb-4 flex gap-4 content-center">
   <button
     on:click|preventDefault={onComputeOrCopy}
     disabled={!$isValid || passwordState === PasswordState.Computing}
-    class="mr-2 px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
+    class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
       disabled:bg-blue-400"
   >
     {#if passwordState === PasswordState.Initial}
@@ -166,8 +165,20 @@
       Copied
     {/if}
   </button>
-  <button class="mr-2" on:click|preventDefault={toggleEditing}>Edit</button>
-  <button on:click|preventDefault={onBack}>Back</button>
+  <button
+    on:click|preventDefault={toggleEditing}
+    class="text-blue-500 hover:text-blue-600 hover:underline"
+  >
+    Edit
+  </button>
+  <button
+    on:click|preventDefault={onBack}
+    class="text-blue-500 hover:text-blue-600 hover:enabled:underline
+      disabled:text-gray-400"
+    disabled={$isDirty}
+  >
+    Back
+  </button>
 </section>
 
 <form use:form class:hidden={!isEditing}>
