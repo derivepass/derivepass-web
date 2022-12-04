@@ -21,7 +21,8 @@
     "build": "vite build",
     "build:wasm": "wasm-pack build --release --target=web ./scrypt-crate",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "deploy": "sh deploy.sh"
   },
   "devDependencies": {
     "@felte/reporter-svelte": "^1.1.4",
