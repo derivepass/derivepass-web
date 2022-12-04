@@ -42,3 +42,9 @@
 {#each filteredApps as app (app.id)}
   <ApplicationCard id={app.id} domain={app.domain} login={app.login}/>
 {/each}
+
+<style>
+  input[type="search"] {
+    -webkit-appearance: none;
+  }
+</style>
