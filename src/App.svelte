@@ -5,6 +5,7 @@
   import { useRegisterSW } from 'virtual:pwa-register/svelte';
 
   import { initPromise as initCrypto } from './util/crypto';
+  import { HOUR } from './util/constants';
   import { keys } from './stores/crypto';
 
   import logo from './assets/logo.svg';
@@ -21,7 +22,14 @@
   const {
     needRefresh,
     updateServiceWorker,
-  } = useRegisterSW();
+  } = useRegisterSW({
+    onRegistered(r) {
+      if (!r) {
+        return;
+      }
+      setInterval(() => r.update(), HOUR);
+    }
+  });
 
   const isLoggedIn = () => $keys !== undefined;
   const isLoggedOut = () => $keys === undefined;
