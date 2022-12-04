@@ -38,7 +38,9 @@
   >
     {#if isComputing}
       <Spinner/>
+      Decrypting Storage
+    {:else}
+      Decrypt Storage
     {/if}
-    Decrypt Storage
   </button>
 </form>
