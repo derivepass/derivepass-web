@@ -12,10 +12,13 @@
   function onSubmit() {
     isComputing = true;
 
+    // TODO(indutny): why tick() doesn't work here?
     setTimeout(() => {
       isComputing = false;
       $keys = computeKeys(password);
       push('/applications');
+
+      // TODO(indutny): Auto-logout after 15 minutes of inactivity.
     }, 0);
   }
 </script>

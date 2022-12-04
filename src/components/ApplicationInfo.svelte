@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onDestroy } from 'svelte';
   import { push, replace } from 'svelte-spa-router';
   import { createForm } from 'felte';
   import { reporter } from '@felte/reporter-svelte';
@@ -27,12 +27,31 @@
     Copied,
   }
 
+  enum DeleteState {
+    Initial,
+    Safety,
+    Confirming,
+  }
+
   // State
   let isEditing = isNew;
   let isShowingExtra = false;
   let password: string | undefined;
   let passwordState = PasswordState.Initial;
+  let deleteState = DeleteState.Initial;
   let justCopiedTimer: NodeJS.Timeout | undefined;
+  let deleteSafetyTimer: NodeJS.Timeout | undefined;
+
+  onDestroy(() => {
+    if (justCopiedTimer !== undefined) {
+      clearTimeout(justCopiedTimer);
+      justCopiedTimer = undefined;
+    }
+    if (deleteSafetyTimer !== undefined) {
+      clearTimeout(deleteSafetyTimer);
+      deleteSafetyTimer = undefined;
+    }
+  });
 
   async function onComputeOrCopy() {
     const presentKeys = $keys;
@@ -43,6 +62,8 @@
 
     if (passwordState === PasswordState.Initial) {
       passwordState = PasswordState.Computing;
+
+      // TODO(indutny): why tick() doesn't work here?
       setTimeout(() => {
         password = computePassword(presentKeys, {
           ...app,
@@ -92,8 +113,18 @@
   });
 
   function onDelete() {
-    // TODO(indutny): confirmation
-    dispatch('delete');
+    if (deleteState === DeleteState.Initial) {
+      deleteState = DeleteState.Safety;
+      deleteSafetyTimer = setTimeout(() => {
+        deleteSafetyTimer = undefined;
+        deleteState = DeleteState.Confirming;
+      }, 5 * SECOND);
+    } else if (deleteState === DeleteState.Safety) {
+      return;
+    } else if (deleteState === DeleteState.Confirming) {
+      dispatch('delete');
+      deleteState = DeleteState.Initial;
+    }
   }
 
   function toggleEditing() {
@@ -233,8 +264,13 @@
         class="px-4 py-2 last:rounded-r bg-red-500 hover:bg-red-600 text-white
           disabled:bg-red-400"
         on:click|preventDefault={onDelete}
+        disabled={deleteState === DeleteState.Safety}
       >
-        Delete
+        {#if deleteState === DeleteState.Initial}
+          Delete
+        {:else}
+          Confirm Deletion
+        {/if}
       </button>
     {/if}
   </section>
