@@ -10,14 +10,14 @@ import {
 import {
   type Application,
   type ApplicationData,
-  type DecryptedApplication,
+  type HydratedApplication,
   VERSION,
 } from './schemas';
 import { keys } from './crypto';
 import { sync } from './sync';
 import { migrator } from './migrator';
 
-const store = writable<ReadonlyArray<DecryptedApplication>>([]);
+const store = writable<ReadonlyArray<HydratedApplication>>([]);
 
 sync(store);
 migrator(store);
@@ -27,6 +27,13 @@ keys.subscribe($keys => {
   store.update(list => {
     return list.map(({ decrypted: _, encrypted, ...rest }) => {
       let decrypted: ApplicationData | undefined;
+
+      if (rest.removed) {
+        return {
+          encrypted: '',
+          ...rest,
+        };
+      }
 
       if ($keys !== undefined) {
         try {
@@ -54,7 +61,7 @@ export const apps = {
         .slice()
         .sort((a, b) => b.modifiedAt - a.modifiedAt)
         .map(x => {
-          if (x.decrypted === undefined) {
+          if (x.removed || x.decrypted === undefined) {
             return undefined;
           }
 
@@ -83,7 +90,18 @@ export const apps = {
 
   deleteById(id: string): void {
     store.update(list => {
-      return list.filter(entry => entry.id !== id);
+      return list.map(entry => {
+        if (entry.id === id) {
+          return {
+            id: entry.id,
+            version: entry.version,
+            encrypted: '',
+            removed: true,
+            modifiedAt: Date.now(),
+          };
+        }
+        return entry;
+      });
     });
   },
 

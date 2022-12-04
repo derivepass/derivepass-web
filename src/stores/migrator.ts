@@ -6,7 +6,7 @@ import {
   encryptApplication,
 } from '../util/crypto';
 import {
-  type DecryptedApplication,
+  type HydratedApplication,
   LegacyApplicationSchema,
   LegacyOptionsSchema,
   VERSION,
@@ -16,7 +16,7 @@ import { keys } from './crypto';
 const LEGACY_PREFIX = 'derivepass/production/';
 
 export function migrator(
-  store: Writable<ReadonlyArray<DecryptedApplication>>,
+  store: Writable<ReadonlyArray<HydratedApplication>>,
 ): void {
   keys.subscribe($keys => {
     if ($keys === undefined) {

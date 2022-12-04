@@ -2,10 +2,10 @@ import { writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 
 import {
-  type DecryptedApplication,
-  type EncryptedApplication,
+  type HydratedApplication,
+  type StoredApplication,
   type SyncSettings,
-  EncryptedApplicationSchema,
+  StoredApplicationSchema,
   SyncSettingsSchema,
 } from './schemas';
 
@@ -29,9 +29,9 @@ settings.subscribe($settings => {
 });
 
 export function sync(
-  store: Writable<ReadonlyArray<DecryptedApplication>>,
+  store: Writable<ReadonlyArray<HydratedApplication>>,
 ): void {
-  const initialData = new Array<EncryptedApplication>();
+  const initialData = new Array<StoredApplication>();
 
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i) ?? '';
@@ -43,7 +43,7 @@ export function sync(
     try {
       const value = JSON.parse(localStorage.getItem(key) ?? '');
 
-      const app = EncryptedApplicationSchema.parse(value);
+      const app = StoredApplicationSchema.parse(value);
 
       initialData.push(app);
     } catch {
@@ -56,40 +56,32 @@ export function sync(
   const modifiedAtById = new Map<string, number>();
 
   store.subscribe($store => {
-    const updated = new Array<EncryptedApplication>();
-    const removed = new Set<string>(modifiedAtById.keys());
+    const updated = new Array<StoredApplication>();
 
     for (const { decrypted: _, ...app } of $store) {
-      const encrypted: EncryptedApplication = app;
-
-      removed.delete(app.id);
+      const stored: StoredApplication = app;
 
       const lastModifiedAt = modifiedAtById.get(app.id);
       modifiedAtById.set(app.id, app.modifiedAt);
 
       if (lastModifiedAt === undefined) {
-        updated.push(encrypted);
+        updated.push(stored);
         continue;
       }
 
       // No update, skip
-      if (lastModifiedAt === encrypted.modifiedAt) {
+      if (lastModifiedAt === stored.modifiedAt) {
         continue;
       }
 
-      updated.push(encrypted);
+      updated.push(stored);
     }
 
-    for (const encrypted of updated) {
+    for (const stored of updated) {
       localStorage.setItem(
-        `${ITEM_PREFIX}${encrypted.id}`,
-        JSON.stringify(encrypted),
+        `${ITEM_PREFIX}${stored.id}`,
+        JSON.stringify(stored),
       );
-    }
-
-    for (const id of removed) {
-      localStorage.removeItem(`${ITEM_PREFIX}${id}`);
-      modifiedAtById.delete(id);
     }
   });
 }

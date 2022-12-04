@@ -45,20 +45,21 @@ export const ApplicationSchema = HeaderSchema.and(ApplicationDataSchema);
 
 export type Application = z.infer<typeof ApplicationSchema>;
 
-export const EncryptedApplicationSchema = HeaderSchema.and(z.object({
+export const StoredApplicationSchema = HeaderSchema.and(z.object({
   encrypted: z.string(),
   modifiedAt: z.number(),
+  removed: z.optional(z.boolean()),
 }));
 
-export type EncryptedApplication = z.infer<typeof EncryptedApplicationSchema>;
+export type StoredApplication = z.infer<typeof StoredApplicationSchema>;
 
-export const DecryptedApplicationSchema = EncryptedApplicationSchema.and(
+export const HydratedApplicationSchema = StoredApplicationSchema.and(
   z.object({
     decrypted: z.optional(ApplicationDataSchema),
   })
 );
 
-export type DecryptedApplication = z.infer<typeof DecryptedApplicationSchema>;
+export type HydratedApplication = z.infer<typeof HydratedApplicationSchema>;
 
 //
 // Settings
