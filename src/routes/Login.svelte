@@ -17,8 +17,6 @@
       isComputing = false;
       $keys = computeKeys(password);
       push('/applications');
-
-      // TODO(indutny): Auto-logout after 15 minutes of inactivity.
     }, 0);
   }
 </script>
