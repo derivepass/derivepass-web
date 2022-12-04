@@ -45,6 +45,7 @@ keys.subscribe($keys => {
 });
 
 export const apps = {
+  // Combine decrypted data with header to get Application entries
   subscribe: derived(
     store,
     $store => {
@@ -101,7 +102,12 @@ export const apps = {
       const modifiedList = list.map(entry => {
         if (entry.id === newEntry.id) {
           found = true;
-          return newEntry;
+          return {
+            ...newEntry,
+
+            // Make sure that we always increment `modifiedAt` on updates.
+            modifiedAt: Math.max(entry.modifiedAt + 1, newEntry.modifiedAt),
+          };
         }
         return entry;
       });

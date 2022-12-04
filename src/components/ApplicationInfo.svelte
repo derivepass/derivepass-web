@@ -70,9 +70,19 @@
 
   const dispatch = createEventDispatcher();
 
-  const { form, data, reset, isDirty, isValid } = createForm<ApplicationData>({
+  const {
+    form,
+    data,
+    reset,
+    setInitialValues,
+    isDirty,
+    isValid,
+  } = createForm<ApplicationData>({
     initialValues: app,
     onSubmit(newData) {
+      setInitialValues(newData);
+      $isDirty = false;
+
       dispatch('submit', newData);
     },
     extend: [
@@ -82,6 +92,7 @@
   });
 
   function onDelete() {
+    // TODO(indutny): confirmation
     dispatch('delete');
   }
 
@@ -90,6 +101,7 @@
   }
 
   function onBack() {
+    // TODO(indutny): confirm saving
     push('/applications');
   }
 

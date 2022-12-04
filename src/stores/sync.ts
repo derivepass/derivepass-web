@@ -32,14 +32,43 @@ export function sync(
 
   store.set(initialData);
 
+  const modifiedAtById = new Map<string, number>();
+
   store.subscribe($store => {
-    for (const { decrypted:_, ...app } of $store) {
+    const updated = new Array<EncryptedApplication>();
+    const removed = new Set<string>(modifiedAtById.keys());
+
+    for (const { decrypted: _, ...app } of $store) {
       const encrypted: EncryptedApplication = app;
 
+      removed.delete(app.id);
+
+      const lastModifiedAt = modifiedAtById.get(app.id);
+      modifiedAtById.set(app.id, app.modifiedAt);
+
+      if (lastModifiedAt === undefined) {
+        updated.push(encrypted);
+        continue;
+      }
+
+      // No update, skip
+      if (lastModifiedAt === encrypted.modifiedAt) {
+        continue;
+      }
+
+      updated.push(encrypted);
+    }
+
+    for (const encrypted of updated) {
       localStorage.setItem(
-        `${PREFIX}${app.id}`,
+        `${PREFIX}${encrypted.id}`,
         JSON.stringify(encrypted),
       );
+    }
+
+    for (const id of removed) {
+      localStorage.removeItem(`${PREFIX}${id}`);
+      modifiedAtById.delete(id);
     }
   });
 }
