@@ -17,6 +17,7 @@
     "@tsconfig/svelte": "^3.0.0",
     "autoprefixer": "^10.4.13",
     "felte": "^1.2.6",
+    "nanoid": "^4.0.0",
     "postcss": "^8.4.19",
     "svelte": "^3.52.0",
     "svelte-check": "^2.9.2",

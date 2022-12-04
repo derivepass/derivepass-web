@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { pop as goBack, replace } from 'svelte-spa-router';
+  import { createEventDispatcher } from 'svelte';
+  import { push, replace } from 'svelte-spa-router';
   import { createForm } from 'felte';
   import { reporter } from '@felte/reporter-svelte';
   import { validator } from '@felte/validator-zod';
@@ -67,10 +68,12 @@
     return;
   }
 
+  const dispatch = createEventDispatcher();
+
   const { form, data, reset, isDirty, isValid } = createForm<ApplicationData>({
     initialValues: app,
-    onSubmit(values) {
-      console.log(values);
+    onSubmit(newData) {
+      dispatch('submit', newData);
     },
     extend: [
       validator({ schema: ApplicationDataSchema }),
@@ -79,6 +82,7 @@
   });
 
   function onDelete() {
+    dispatch('delete');
   }
 
   function toggleEditing() {
@@ -86,7 +90,7 @@
   }
 
   function onBack() {
-    goBack();
+    push('/applications');
   }
 
   function toggleExtra() {
@@ -94,12 +98,16 @@
   }
 </script>
 
-<h2 class="text-2xl"><b>{$data.domain}</b>/{$data.login}</h2>
+{#if isNew}
+  <h2 class="text-2xl">New Application</h2>
+{:else}
+  <h2 class="text-2xl"><b>{$data.domain}</b>/{$data.login}</h2>
+{/if}
 
 <section class="mt-2 mb-4 flex gap-1 content-center">
   <button
     on:click|preventDefault={onComputeOrCopy}
-    disabled={passwordState === PasswordState.Computing}
+    disabled={!$isValid || passwordState === PasswordState.Computing}
     class="mr-2 px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
       disabled:bg-blue-400"
   >
@@ -127,6 +135,7 @@
     on:blur
     name="domain"
     label="Domain name"
+    placeholder="mastodon.social"
     hint="Examples: google.com, fb.com, etc"/>
   <FormField
     on:input
@@ -136,6 +145,7 @@
     name="login"
     type="email"
     label="Username"
+    placeholder="my@email.com"
     hint="Examples: my_user_name, derivepass82"/>
   <FormField
     on:input

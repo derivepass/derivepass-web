@@ -1,20 +1,32 @@
 <script lang="ts">
+  import { push, replace } from 'svelte-spa-router';
   import ApplicationInfo from '../components/ApplicationInfo.svelte';
+  import { apps } from '../stores/apps';
+  import type { Application } from '../stores/schemas';
 
   export let params: { id: string };
 
-  const isNew = params.id === 'new';
+  $: isNew = params.id === 'new';
 
-  const app = {
-    id: 'id',
-    v: 1,
-    domain: 'signal.org',
-    login: 'indutny',
-    revision: 1,
-    allowedChars: 'a-zA-Z0-9_.',
-    requiredChars: '',
-    passwordLen: 24,
-  };
+  $: app = isNew ? apps.getTemplate() : apps.getById(params.id);
+
+  function onSubmit({ detail: newApp }: CustomEvent<Application>) {
+    apps.save(newApp);
+    if (isNew) {
+      push(`/applications/${newApp.id}`);
+    }
+  }
+
+  function onDelete() {
+    if (app) {
+      apps.deleteById(app.id);
+    }
+    push('/applications');
+  }
 </script>
 
-<ApplicationInfo {isNew} {app}/>
+{#if app}
+  <ApplicationInfo {isNew} {app} on:submit={onSubmit} on:delete={onDelete}/>
+{:else}
+  {(() => replace('/applications'))()}
+{/if}

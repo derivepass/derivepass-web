@@ -7,6 +7,7 @@
   export let hint: string | undefined = undefined;
   export let required = false;
   export let disabled = false;
+  export let placeholder: string | undefined = undefined;
 
   export let value: string | number | undefined = undefined;
 
@@ -34,6 +35,7 @@
     {disabled}
     aria-required={required}
     on:input={onInput}
+    {placeholder}
     {value}
     />
 </label>
