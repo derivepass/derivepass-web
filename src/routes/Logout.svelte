@@ -4,5 +4,5 @@
   import { keys } from '../stores/crypto';
 
   $keys = undefined;
-  replace('/');
+  replace('/login');
 </script>

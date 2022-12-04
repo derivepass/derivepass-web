@@ -1,12 +1,32 @@
+import { writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 
 import {
   type DecryptedApplication,
   type EncryptedApplication,
+  type SyncSettings,
   EncryptedApplicationSchema,
+  SyncSettingsSchema,
 } from './schemas';
 
 const PREFIX = 'dp:v2:';
+const ITEM_PREFIX = `${PREFIX}i:`;
+const SETTINGS_KEY = `${PREFIX}sync-settings`;
+
+export const settings = writable<SyncSettings | undefined>();
+
+const initialValue = localStorage.getItem(SETTINGS_KEY);
+if (initialValue) {
+  try {
+    settings.set(SyncSettingsSchema.parse(JSON.parse(initialValue)));
+  } catch {
+    // Ignore
+  }
+}
+
+settings.subscribe($settings => {
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify($settings));
+});
 
 export function sync(
   store: Writable<ReadonlyArray<DecryptedApplication>>,
@@ -16,7 +36,7 @@ export function sync(
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i) ?? '';
 
-    if (!key.startsWith(PREFIX)) {
+    if (!key.startsWith(ITEM_PREFIX)) {
       continue;
     }
 
@@ -62,13 +82,13 @@ export function sync(
 
     for (const encrypted of updated) {
       localStorage.setItem(
-        `${PREFIX}${encrypted.id}`,
+        `${ITEM_PREFIX}${encrypted.id}`,
         JSON.stringify(encrypted),
       );
     }
 
     for (const id of removed) {
-      localStorage.removeItem(`${PREFIX}${id}`);
+      localStorage.removeItem(`${ITEM_PREFIX}${id}`);
       modifiedAtById.delete(id);
     }
   });

@@ -1,16 +1,15 @@
 <script type="ts">
-  import { link, location } from 'svelte-spa-router';
+  import { link } from 'svelte-spa-router';
+  import active from 'svelte-spa-router/active';
 
   export let href: string;
-
-  $: ariaPressed = $location == href;
 </script>
 
 <a
   {href}
-  aria-pressed={ariaPressed}
-  class="text-zinc-500 hover:text-black aria-pressed:text-black"
+  class="text-zinc-500 hover:text-black"
   use:link
+  use:active={{ className: 'text-black' }}
 >
   <slot/>
 </a>

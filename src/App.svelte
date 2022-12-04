@@ -10,7 +10,7 @@
   import About from './routes/About.svelte';
   import Login from './routes/Login.svelte';
   import Logout from './routes/Logout.svelte';
-  import Settings from './routes/Settings.svelte';
+  import Sync from './routes/Sync.svelte';
   import ApplicationList from './routes/ApplicationList.svelte';
   import Application from './routes/Application.svelte';
 
@@ -19,7 +19,7 @@
   const routes = {
     '/': About,
     '/about': About,
-    '/settings': Settings,
+    '/sync': Sync,
     '/login': wrap({
       component: Login,
       conditions: [() => $keys === undefined],
@@ -39,7 +39,7 @@
   };
 
   function conditionsFailed() {
-    replace('/');
+    replace('/login');
   }
 </script>
 
@@ -53,7 +53,7 @@
   {:else}
     <Link href="/applications">Applications</Link>
   {/if}
-  <Link href="/settings">Settings</Link>
+  <Link href="/sync">Sync</Link>
   <Link href="/about">About</Link>
   {#if $keys !== undefined}
     <Link href="/logout">Logout</Link>

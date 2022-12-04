@@ -60,6 +60,21 @@ export const DecryptedApplicationSchema = EncryptedApplicationSchema.and(
 
 export type DecryptedApplication = z.infer<typeof DecryptedApplicationSchema>;
 
+//
+// Settings
+//
+
+export const SyncSettingsSchema = z.object({
+  host: z.string(),
+  token: z.string(),
+});
+
+export type SyncSettings = z.infer<typeof SyncSettingsSchema>;
+
+//
+// Compatibility with previous version
+//
+
 export const LegacyApplicationSchema = z.object({
   uuid: z.string(),
   changedAt: z.number(),

@@ -16,7 +16,7 @@
   function onSubmit({ detail: newApp }: CustomEvent<Application>) {
     const currentKeys = $keys;
     if (currentKeys === undefined) {
-      push('/');
+      push('/login');
       return;
     }
     apps.save(currentKeys, newApp);
