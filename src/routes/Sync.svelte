@@ -2,7 +2,7 @@
   import { createForm } from 'felte';
 
   import FormField from '../components/FormField.svelte';
-  import { settings } from '../stores/sync';
+  import { remoteState } from '../stores/sync';
   import { AuthTokenResponseSchema } from '../stores/schemas';
   import { fromString as base64FromString } from '../util/b64';
 
@@ -16,7 +16,7 @@
 
   const { form } = createForm<Auth>({
     initialValues: {
-      host: $settings?.host ?? '',
+      host: $remoteState?.host ?? '',
       username: '',
       password: '',
     },
@@ -36,9 +36,11 @@
       }
       const { token } = AuthTokenResponseSchema.parse(await res.json());
 
-      $settings = {
+      $remoteState = {
         host: auth.host,
         token,
+        lastModifiedAt: 0,
+        lastSyncedAt: 0,
       };
     },
     onError() {
@@ -46,22 +48,25 @@
     }
   });
 
+  async function onSyncNow(): Promise<void> {
+  }
+
   async function onUnlink(): Promise<void> {
-    let oldSettings = $settings;
-    $settings = undefined;
-    if (oldSettings === undefined) {
+    let oldState = $remoteState;
+    $remoteState = undefined;
+    if (oldState === undefined) {
       return;
     }
 
     // Do best effort to reclaim token.
     try {
-      await fetch(`https://${oldSettings.host}/user/token`, {
+      await fetch(`https://${oldState.host}/user/token`, {
         method: 'DELETE',
         headers: {
-          authorization: `Bearer ${oldSettings.token}`,
+          authorization: `Bearer ${oldState.token}`,
           'content-type': 'application/json',
         },
-        body: JSON.stringify({ token: oldSettings.token }),
+        body: JSON.stringify({ token: oldState.token }),
       });
     } catch {
       // Ignore
@@ -69,21 +74,37 @@
   }
 </script>
 
-{#if $settings}
+{#if $remoteState}
   <h2 class="text-3xl mb-4">Synchronization</h2>
 
   <p class="my-2">
-    Synchronizing with <b>{$settings.host}</b>.
+    {#if $remoteState.lastSyncedAt}
+      Last synchronized with <b>{$remoteState.host}</b> on
+      {new Date($remoteState.lastSyncedAt)}.
+    {:else}
+      Awaiting initial sync with <b>{$remoteState.host}</b>.
+    {/if}
   </p>
 
-  <button
-    type="reset"
-    class="mt-4 px-4 py-2 rounded bg-red-500 hover:bgred-600 text-white
-      disabled:bg-red-400"
-    on:click|preventDefault={onUnlink}
-  >
-    Unlink
-  </button>
+  <section class="mt-4 flex gap-1">
+    <button
+      type="button"
+      class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
+        disabled:bg-blue-400"
+      on:click|preventDefault={onSyncNow}
+    >
+      Sync Now
+    </button>
+
+    <button
+      type="reset"
+      class="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white
+        disabled:bg-red-400"
+      on:click|preventDefault={onUnlink}
+    >
+      Unlink
+    </button>
+  </section>
 {:else}
   <h2 class="text-3xl mb-4">Setup Synchronization</h2>
 

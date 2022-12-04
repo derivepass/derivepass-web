@@ -4,28 +4,28 @@ import type { Writable } from 'svelte/store';
 import {
   type HydratedApplication,
   type StoredApplication,
-  type SyncSettings,
+  type SyncState,
   StoredApplicationSchema,
-  SyncSettingsSchema,
+  SyncStateSchema,
 } from './schemas';
 
 const PREFIX = 'dp:v2:';
 const ITEM_PREFIX = `${PREFIX}i:`;
-const SETTINGS_KEY = `${PREFIX}sync-settings`;
+const STATE_KEY = `${PREFIX}sync-state`;
 
-export const settings = writable<SyncSettings | undefined>();
+export const remoteState = writable<SyncState | undefined>();
 
-const initialValue = localStorage.getItem(SETTINGS_KEY);
+const initialValue = localStorage.getItem(STATE_KEY);
 if (initialValue) {
   try {
-    settings.set(SyncSettingsSchema.parse(JSON.parse(initialValue)));
+    remoteState.set(SyncStateSchema.parse(JSON.parse(initialValue)));
   } catch {
     // Ignore
   }
 }
 
-settings.subscribe($settings => {
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify($settings));
+remoteState.subscribe($remoteState => {
+  localStorage.setItem(STATE_KEY, JSON.stringify($remoteState));
 });
 
 export function sync(
