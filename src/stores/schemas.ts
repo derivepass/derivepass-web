@@ -65,14 +65,14 @@ export type HydratedApplication = z.infer<typeof HydratedApplicationSchema>;
 // Settings
 //
 
-export const SyncStateSchema = z.object({
+export const RemoteSyncStateSchema = z.object({
   host: z.string(),
   token: z.string(),
   lastModifiedAt: z.number(),
   lastSyncedAt: z.number(),
 });
 
-export type SyncState = z.infer<typeof SyncStateSchema>;
+export type RemoteSyncState = z.infer<typeof RemoteSyncStateSchema>;
 
 export const AuthTokenResponseSchema = z.object({
   token: z.string(),

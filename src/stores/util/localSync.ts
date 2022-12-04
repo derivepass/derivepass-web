@@ -1,34 +1,15 @@
-import { writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
 
+import { STORAGE_PREFIX } from '../../util/constants';
 import {
   type HydratedApplication,
   type StoredApplication,
-  type SyncState,
   StoredApplicationSchema,
-  SyncStateSchema,
-} from './schemas';
+} from '../schemas';
 
-const PREFIX = 'dp:v2:';
-const ITEM_PREFIX = `${PREFIX}i:`;
-const STATE_KEY = `${PREFIX}sync-state`;
+const ITEM_PREFIX = `${STORAGE_PREFIX}i:`;
 
-export const remoteState = writable<SyncState | undefined>();
-
-const initialValue = localStorage.getItem(STATE_KEY);
-if (initialValue) {
-  try {
-    remoteState.set(SyncStateSchema.parse(JSON.parse(initialValue)));
-  } catch {
-    // Ignore
-  }
-}
-
-remoteState.subscribe($remoteState => {
-  localStorage.setItem(STATE_KEY, JSON.stringify($remoteState));
-});
-
-export function sync(
+export function localSync(
   store: Writable<ReadonlyArray<HydratedApplication>>,
 ): void {
   const initialData = new Array<StoredApplication>();

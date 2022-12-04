@@ -14,12 +14,12 @@ import {
   VERSION,
 } from './schemas';
 import { keys } from './crypto';
-import { sync } from './sync';
-import { migrator } from './migrator';
+import { localSync } from './util/localSync';
+import { migrator } from './util/migrator';
 
 const store = writable<ReadonlyArray<HydratedApplication>>([]);
 
-sync(store);
+localSync(store);
 migrator(store);
 
 // Erase "encrypted" key and decrypt on apps on any key change.

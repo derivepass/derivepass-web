@@ -2,19 +2,16 @@
   import { createForm } from 'felte';
 
   import FormField from '../components/FormField.svelte';
-  import { remoteState } from '../stores/sync';
-  import { AuthTokenResponseSchema } from '../stores/schemas';
-  import { fromString as base64FromString } from '../util/b64';
-
-  type Auth = Readonly<{
-    host: string;
-    username: string;
-    password: string;
-  }>;
+  import {
+    type RemoteAuth,
+    remoteState,
+    authorize,
+    unlink,
+  } from '../stores/remoteSync';
 
   let error: string | undefined;
 
-  const { form } = createForm<Auth>({
+  const { form } = createForm<RemoteAuth>({
     initialValues: {
       host: $remoteState?.host ?? '',
       username: '',
@@ -23,25 +20,7 @@
     async onSubmit(auth) {
       error = undefined;
 
-      const auth64 = base64FromString(`${auth.username}:${auth.password}`);
-      const res = await fetch(`https://${auth.host}/user/token`, {
-        method: 'PUT',
-        headers: {
-          authorization: `Basic ${auth64}`,
-        },
-      });
-
-      if (!res.ok) {
-        throw new Error('Request failed');
-      }
-      const { token } = AuthTokenResponseSchema.parse(await res.json());
-
-      $remoteState = {
-        host: auth.host,
-        token,
-        lastModifiedAt: 0,
-        lastSyncedAt: 0,
-      };
+      return authorize(auth);
     },
     onError() {
       error = 'Invalid credentials or unreachable server';
@@ -49,28 +28,6 @@
   });
 
   async function onSyncNow(): Promise<void> {
-  }
-
-  async function onUnlink(): Promise<void> {
-    let oldState = $remoteState;
-    $remoteState = undefined;
-    if (oldState === undefined) {
-      return;
-    }
-
-    // Do best effort to reclaim token.
-    try {
-      await fetch(`https://${oldState.host}/user/token`, {
-        method: 'DELETE',
-        headers: {
-          authorization: `Bearer ${oldState.token}`,
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({ token: oldState.token }),
-      });
-    } catch {
-      // Ignore
-    }
   }
 </script>
 
@@ -100,7 +57,7 @@
       type="reset"
       class="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white
         disabled:bg-red-400"
-      on:click|preventDefault={onUnlink}
+      on:click|preventDefault={unlink}
     >
       Unlink
     </button>

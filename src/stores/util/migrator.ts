@@ -4,14 +4,14 @@ import { nanoid } from 'nanoid';
 import {
   decryptLegacyString,
   encryptApplication,
-} from '../util/crypto';
+} from '../../util/crypto';
 import {
   type HydratedApplication,
   LegacyApplicationSchema,
   LegacyOptionsSchema,
   VERSION,
-} from './schemas';
-import { keys } from './crypto';
+} from '../schemas';
+import { keys } from '../crypto';
 
 const LEGACY_PREFIX = 'derivepass/production/';
 
