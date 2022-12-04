@@ -46,8 +46,26 @@
     }
   });
 
-  function onUnlink() {
+  async function onUnlink(): Promise<void> {
+    let oldSettings = $settings;
     $settings = undefined;
+    if (oldSettings === undefined) {
+      return;
+    }
+
+    // Do best effort to reclaim token.
+    try {
+      await fetch(`https://${oldSettings.host}/user/token`, {
+        method: 'DELETE',
+        headers: {
+          authorization: `Bearer ${oldSettings.token}`,
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({ token: oldSettings.token }),
+      });
+    } catch {
+      // Ignore
+    }
   }
 </script>
 
