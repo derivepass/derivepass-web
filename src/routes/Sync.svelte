@@ -34,8 +34,9 @@
 
   <p class="my-2">
     {#if $remoteState.lastSyncedAt}
-      Last synchronized with <b>{$remoteState.host}</b> on
-      {new Date($remoteState.lastSyncedAt)}.
+      Last synchronized with <b>{$remoteState.host}</b>
+      <br/>
+      on <b>{new Date($remoteState.lastSyncedAt).toLocaleString()}</b>.
     {:else}
       Awaiting initial sync with <b>{$remoteState.host}</b>.
     {/if}
