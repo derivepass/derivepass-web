@@ -25,7 +25,7 @@ export const remoteState = writable<RemoteSyncState | undefined>();
 // Just to trigger syncs
 const syncTrigger = writable<number>(0);
 
-let syncTimer: NodeJS.Timeout | undefined;
+let syncTimer: number | undefined;
 
 function restartTimer(): void {
   if (syncTimer !== undefined) {

@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { slide } from 'svelte/transition';
   import Router, { replace } from 'svelte-spa-router';
   import { wrap } from 'svelte-spa-router/wrap';
+  import { useRegisterSW } from 'virtual:pwa-register/svelte';
 
   import { initPromise as initCrypto } from './util/crypto';
   import { keys } from './stores/crypto';
@@ -15,6 +17,11 @@
   import Application from './routes/Application.svelte';
 
   import Link from './components/Link.svelte';
+
+  const {
+    needRefresh,
+    updateServiceWorker,
+  } = useRegisterSW();
 
   const isLoggedIn = () => $keys !== undefined;
   const isLoggedOut = () => $keys === undefined;
@@ -45,6 +52,27 @@
     replace('/login');
   }
 </script>
+
+{#if $needRefresh}
+<header transition:slide class="bg-white px-4 py-2 flex items-center gap-4 border-b">
+  New version is available:
+  <button
+    type="submit"
+    on:click|preventDefault={() => updateServiceWorker()}
+    class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white"
+  >
+    Reload
+  </button>
+  <button
+    type="reset"
+    on:click|preventDefault={() => $needRefresh = false}
+    class="px-4 py-2 rounded text-yellow-500 hover:text-yellow-600
+      hover:underline"
+  >
+    Skip
+  </button>
+</header>
+{/if}
 
 <nav class="flex gap-4 items-center p-4">
   <Link href="/">

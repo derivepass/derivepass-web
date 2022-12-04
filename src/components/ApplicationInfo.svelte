@@ -39,8 +39,8 @@
   let password: string | undefined;
   let passwordState = PasswordState.Initial;
   let deleteState = DeleteState.Initial;
-  let justCopiedTimer: NodeJS.Timeout | undefined;
-  let deleteSafetyTimer: NodeJS.Timeout | undefined;
+  let justCopiedTimer: number | undefined;
+  let deleteSafetyTimer: number | undefined;
 
   onDestroy(() => {
     if (justCopiedTimer !== undefined) {

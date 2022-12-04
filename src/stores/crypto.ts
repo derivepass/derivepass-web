@@ -5,7 +5,7 @@ import { MINUTE } from '../util/constants';
 
 export const keys = writable<Keys | undefined>();
 
-let autoLogoutTimer: NodeJS.Timeout | undefined;
+let autoLogoutTimer: number | undefined;
 
 keys.subscribe($keys => {
   if (autoLogoutTimer !== undefined) {
