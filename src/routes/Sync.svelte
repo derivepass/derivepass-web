@@ -2,6 +2,7 @@
   import { createForm } from 'felte';
 
   import FormField from '../components/FormField.svelte';
+  import ExternalLink from '../components/ExternalLink.svelte';
   import {
     type RemoteAuth,
     remoteState,
@@ -107,4 +108,14 @@
       Login
     </button>
   </form>
+
+  <p class="mt-4">
+    <small>
+      See
+      <ExternalLink href="https://github.com/derivepass/derivepass-storage#readme">
+        derivepass-storage
+      </ExternalLink>
+      for instructions on running your own storage server.
+    </small>
+  </p>
 {/if}
