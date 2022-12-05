@@ -148,6 +148,7 @@
       domain: suggestedDefaults.domain,
       ...suggestedDefaults.options,
     };
+    $isDirty = true;
   }
 
   $: isUsingSuggestedDomain = !suggestedDefaults ||
