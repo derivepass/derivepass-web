@@ -57,7 +57,11 @@
   };
 
   function conditionsFailed() {
-    replace('/login');
+    if ($keys === undefined) {
+      replace('/login');
+    } else {
+      replace('/applications');
+    }
   }
 </script>
 
