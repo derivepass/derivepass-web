@@ -1,5 +1,7 @@
 # DerivePass
 
+![Logotype](https://raw.githubusercontent.com/derivepass/derivepass-web/main/src/assets/logo.svg)
+
 *Compute secure passwords without storing them anywhere*
 
 ## About
