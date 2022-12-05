@@ -186,8 +186,8 @@
     on:blur
     name="domain"
     label="Domain name"
-    placeholder="mastodon.social"
-    hint="Examples: google.com, fb.com, etc"/>
+    placeholder="fosstodon.org"
+    hint="Examples: bookwyrm.social, proton.me, etc"/>
   <FormField
     on:input
     on:change
