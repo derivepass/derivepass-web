@@ -59,7 +59,7 @@
 <p>
   Your privacy is important to us. Your data is stored only locally
   <b>on your computer</b>, by default, unless you manually decide to use
-  remote storage (e.g., iCloud). We <b>never</b> store unencrypted website
+  remote storage. We <b>never</b> store unencrypted website
   domain names, usernames, or passwords. <b>No tracking</b> of any kind is
   used on this website.
 </p>
@@ -97,7 +97,7 @@
 
 <p class="my-2">
   Every bit of information that is stored locally and/or remotely (through
-  optional iCloud synchronization) is encrypted with an
+  optional synchronization) is encrypted with an
   <ExternalLink href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard">
     AES
   </ExternalLink>
