@@ -1,14 +1,12 @@
 import { writable, derived } from 'svelte/store';
 import { nanoid } from 'nanoid';
 
-import {
-  type Keys,
-  DEFAULT_OPTIONS,
-} from '../crypto/common';
+import type { Keys } from '../crypto/common';
 import {
   encryptApplication,
   decryptApplication,
 } from '../crypto/apps';
+import { DEFAULT_OPTIONS } from '../util/presets';
 import {
   type Application,
   type ApplicationData,

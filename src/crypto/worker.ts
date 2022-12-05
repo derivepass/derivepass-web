@@ -1,11 +1,11 @@
 import { derive } from 'scrypt-crate';
 
 import { flatten } from '../util/ranges';
+import { isDefaultOptions } from '../util/presets';
 import type { Application } from '../stores/schemas';
 import {
   initPromise,
   toHex,
-  isDefaultOptions,
   passwordEntropyBits,
   type Keys,
   type PasswordRanges,

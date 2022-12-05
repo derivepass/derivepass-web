@@ -6,12 +6,6 @@ export type Keys = Readonly<{
   hmac: Uint8Array;
 }>;
 
-export type PasswordOptions = Readonly<{
-  requiredChars: string;
-  allowedChars: string;
-  passwordLen: number;
-}>;
-
 export type PasswordRanges = Readonly<{
   required: ReadonlyArray<string>;
   allowed: ReadonlyArray<string>;
@@ -20,12 +14,6 @@ export type PasswordRanges = Readonly<{
 }>;
 
 
-export const DEFAULT_OPTIONS: PasswordOptions = {
-  allowedChars: 'a-zA-Z0-9_.',
-  requiredChars: '',
-  passwordLen: 24,
-};
-
 // NOTE: this is upper bound for an entropy, lower bound depends on the size
 // of `required` array.
 
@@ -33,16 +21,6 @@ export function passwordEntropyBits(
   { union, passwordLen }: PasswordRanges,
 ): number {
   return Math.ceil(Math.log2(union.length) * passwordLen);
-}
-
-export function isDefaultOptions({
-  allowedChars,
-  requiredChars,
-  passwordLen,
-}: PasswordOptions): boolean {
-  return allowedChars === DEFAULT_OPTIONS.allowedChars &&
-    requiredChars === DEFAULT_OPTIONS.requiredChars &&
-    passwordLen === DEFAULT_OPTIONS.passwordLen;
 }
 
 function alpha(ch: number): number {

@@ -16,6 +16,7 @@
   import { keys } from '../stores/crypto';
   import { computePassword } from '../crypto/keys';
   import { SECOND } from '../util/constants';
+  import PRESETS, { isDefaultOptions } from '../util/presets';
 
   export let app: Application;
   export let isNew: boolean;
@@ -109,6 +110,8 @@
     ],
   });
 
+  $: suggestedDefaults = PRESETS.get($data.domain);
+
   function onDelete() {
     if (deleteState === DeleteState.Initial) {
       deleteState = DeleteState.Safety;
@@ -135,6 +138,24 @@
   function toggleExtra() {
     isShowingExtra = !isShowingExtra;
   }
+
+  function onUsePreset() {
+    if (!suggestedDefaults) {
+      return;
+    }
+    $data = {
+      ...$data,
+      domain: suggestedDefaults.domain,
+      ...suggestedDefaults.options,
+    };
+  }
+
+  $: isUsingSuggestedDomain = !suggestedDefaults ||
+    $data.domain === suggestedDefaults.domain;
+  $: isUsingSuggestedDefaults = isDefaultOptions(
+    $data,
+    suggestedDefaults?.options,
+  );
 </script>
 
 {#if isNew}
@@ -179,6 +200,36 @@
 </section>
 
 <form use:form class:hidden={!isEditing}>
+  {#if
+      suggestedDefaults &&
+      (!isUsingSuggestedDefaults || !isUsingSuggestedDomain)
+  }
+    <section class="px-4 py-2 mb-2 rounded bg-yellow-100 text-yellow-800">
+      <p>
+        <b>Recommended</b> configuration is available for this domain.
+      </p>
+
+      {#if !isNew}
+        <p class="mt-2 text-red-600">
+          <b>Warning</b>: Changing configuration of an existing app will change
+          the password. Consider computing and copying current password
+          before making a change.
+        </p>
+      {/if}
+
+      <p class="mt-2">
+        <button
+          type="button"
+          class="px-4 py-2 rounded bg-yellow-400 hover:bg-yellow-500
+            active:bg-yellow-600 text-black"
+          on:click|preventDefault={onUsePreset}
+        >
+          Use
+        </button>
+      </p>
+    </section>
+  {/if}
+
   <FormField
     on:input
     on:change
@@ -187,7 +238,8 @@
     name="domain"
     label="Domain name"
     placeholder="fosstodon.org"
-    hint="Examples: bookwyrm.social, proton.me, etc"/>
+    hint="Examples: bookwyrm.social, proton.me, etc"
+    bind:value={$data.domain}/>
   <FormField
     on:input
     on:change
@@ -228,7 +280,8 @@
       on:blur
       name="allowedChars"
       label="Allowed characters"
-      hint="Characters that can be present in the password"/>
+      hint="Characters that can be present in the password"
+      bind:value={$data.allowedChars}/>
     <FormField
       on:input
       on:change
@@ -236,7 +289,8 @@
       on:blur
       name="requiredChars"
       label="Required characters"
-      hint="Characters that must be present in the password"/>
+      hint="Characters that must be present in the password"
+      bind:value={$data.requiredChars}/>
     <FormField
       on:input
       on:change
@@ -244,7 +298,8 @@
       on:blur
       name="passwordLen"
       type="number"
-      label="Password length"/>
+      label="Password length"
+      bind:value={$data.passwordLen}/>
   </section>
 
   <section class="flex my-2">
