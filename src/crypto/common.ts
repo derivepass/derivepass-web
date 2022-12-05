@@ -56,7 +56,7 @@ function alpha(ch: number): number {
   } else {
     throw new Error('Not a hex character, code: ' + ch);
   }
-};
+}
 
 export function fromHex(hex: string): Uint8Array {
   if (hex.length % 2 !== 0) {

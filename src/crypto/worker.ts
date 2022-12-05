@@ -161,4 +161,4 @@ onmessage = async (e) => {
     };
   }
   postMessage(res);
-}
+};

@@ -4,7 +4,7 @@
   import ApplicationCard from '../components/ApplicationCard.svelte';
   import { apps } from '../stores/apps';
 
-  let filter: string = '';
+  let filter = '';
 
   $: lowerCaseFilter = filter.toLowerCase();
 
@@ -15,13 +15,17 @@
   function onAdd() {
     push('/applications/new');
   }
+
+  function onSubmit() {
+    // Ignore
+  }
 </script>
 
 <form
   class="flex items-center rounded focus-within:outline-2 focus-within:outline
     outline-blue-500"
   autocomplete="off"
-  on:submit|preventDefault={() => {}}
+  on:submit|preventDefault={onSubmit}
 >
   <input
     class="grow px-4 py-2 min-w-0 rounded-l border focus:outline-none"
