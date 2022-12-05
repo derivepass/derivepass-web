@@ -15,16 +15,16 @@ TypeScript.
 
 ## Development
 
+You will need [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/) to
+compile the WebAssembly worker, so make sure that it is installed and available
+in your path before starting!
+
 ```sh
 npm install
+npm run build:wasm
 npm run dev
 ```
 
-
-### Lints and fixes files
-```
-npm run lint
-```
 
 #### LICENSE
 
