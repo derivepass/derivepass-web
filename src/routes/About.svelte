@@ -47,7 +47,7 @@
 
 <p class="my-2">
   Unlike traditional password managers, <b>DerivePass</b> never uploads
-  neither the Master Password or website passwords to the cloud. The only
+  neither the Master Password nor website passwords to the cloud. The only
   information that is stored is <b>encrypted</b> website domain names and
   usernames.
 </p>
@@ -59,9 +59,11 @@
 <p>
   Your privacy is important to us. Your data is stored only locally
   <b>on your computer</b>, by default, unless you manually decide to use
-  remote storage. We <b>never</b> store unencrypted website
-  domain names, usernames, or passwords. <b>No tracking</b> of any kind is
-  used on this website.
+  <ExternalLink href="https://github.com/derivepass/derivepass-storage#readme">
+    self-hosted remote storage
+  </ExternalLink>.
+  We <b>never</b> store unencrypted website domain names, usernames,
+  or passwords. <b>No tracking</b> of any kind is used on this website.
 </p>
 
 <hr class="my-4"/>
@@ -77,7 +79,7 @@
   algorithm is used for deriving application passwords and
   encryption/authentication keys. Due to the strong cryptographic properties
   of scrypt, the compromise of any single application password does not
-  compromise any other application passwords or the Master password.
+  compromise other passwords or the Master Password itself.
 </p>
 
 <p class="my-2">
@@ -92,7 +94,7 @@
   </ExternalLink>
   parameter of scrypt. Thus every revision increment will result in a
   completely different generated password. This is convenient for changing the
-  password whenever it is required.
+  password whenever it is required or just rotating them on a schedule.
 </p>
 
 <p class="my-2">
