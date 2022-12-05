@@ -5,7 +5,7 @@ import createDebug from 'debug';
 import {
   decryptLegacyString,
   encryptApplication,
-} from '../../util/crypto';
+} from '../../crypto/apps';
 import {
   type HydratedApplication,
   LegacyApplicationSchema,

@@ -3,21 +3,19 @@
 
   import FormField from '../components/FormField.svelte';
   import Spinner from '../components/Spinner.svelte';
-  import { computeKeys } from '../util/crypto';
+  import { computeKeys } from '../crypto/keys';
   import { keys } from '../stores/crypto';
 
   let password = '';
   let isComputing = false;
 
-  function onSubmit() {
+  async function onSubmit() {
     isComputing = true;
 
-    // TODO(indutny): move to worker eventually.
-    setTimeout(() => {
-      isComputing = false;
-      $keys = computeKeys(password);
-      push('/applications');
-    }, 0);
+    $keys = await computeKeys(password);
+
+    isComputing = false;
+    push('/applications');
   }
 </script>
 

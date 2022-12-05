@@ -14,7 +14,7 @@
   import Spinner from '../components/Spinner.svelte';
 
   import { keys } from '../stores/crypto';
-  import { computePassword } from '../util/crypto';
+  import { computePassword } from '../crypto/keys';
   import { SECOND } from '../util/constants';
 
   export let app: Application;
@@ -63,14 +63,11 @@
     if (passwordState === PasswordState.Initial) {
       passwordState = PasswordState.Computing;
 
-      // TODO(indutny): move to worker eventually.
-      setTimeout(() => {
-        password = computePassword(presentKeys, {
-          ...app,
-          ...$data,
-        });
-        passwordState = PasswordState.Computed;
-      }, 0);
+      password = await computePassword(presentKeys, {
+        ...app,
+        ...$data,
+      });
+      passwordState = PasswordState.Computed;
       return;
     }
 

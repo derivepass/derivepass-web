@@ -4,9 +4,11 @@ import { nanoid } from 'nanoid';
 import {
   type Keys,
   DEFAULT_OPTIONS,
+} from '../crypto/common';
+import {
   encryptApplication,
   decryptApplication,
-} from '../util/crypto';
+} from '../crypto/apps';
 import {
   type Application,
   type ApplicationData,

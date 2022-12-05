@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-import type { Keys } from '../util/crypto';
+import type { Keys } from '../crypto/common';
 import { MINUTE } from '../util/constants';
 
 export const keys = writable<Keys | undefined>();

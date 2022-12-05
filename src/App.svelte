@@ -4,7 +4,7 @@
   import { wrap } from 'svelte-spa-router/wrap';
   import { useRegisterSW } from 'virtual:pwa-register/svelte';
 
-  import { initPromise as initCrypto } from './util/crypto';
+  import { initPromise as initCrypto } from './crypto/common';
   import { HOUR } from './util/constants';
   import { keys } from './stores/crypto';
 
