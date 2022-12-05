@@ -153,7 +153,7 @@
 
   $: isUsingSuggestedDomain = !suggestedDefaults ||
     $data.domain === suggestedDefaults.domain;
-  $: isUsingSuggestedDefaults = isDefaultOptions(
+  $: isUsingSuggestedDefaults = !suggestedDefaults || isDefaultOptions(
     $data,
     suggestedDefaults?.options,
   );
@@ -201,10 +201,7 @@
 </section>
 
 <form use:form class:hidden={!isEditing}>
-  {#if
-      suggestedDefaults &&
-      (!isUsingSuggestedDefaults || !isUsingSuggestedDomain)
-  }
+  {#if !isUsingSuggestedDefaults || !isUsingSuggestedDomain}
     <section class="px-4 py-2 mb-2 rounded bg-yellow-100 text-yellow-800">
       <p>
         <b>Recommended</b> configuration is available for this domain.
