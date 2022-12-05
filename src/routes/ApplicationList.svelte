@@ -25,7 +25,7 @@
 >
   <input
     class="grow px-4 py-2 min-w-0 rounded-l border focus:outline-none"
-    type="search"
+    type="text"
     autocomplete="off"
     placeholder="Filter applications"
     bind:value={filter}
@@ -42,9 +42,3 @@
 {#each filteredApps as app (app.id)}
   <ApplicationCard id={app.id} domain={app.domain} login={app.login}/>
 {/each}
-
-<style>
-  input[type="search"] {
-    -webkit-appearance: none;
-  }
-</style>
