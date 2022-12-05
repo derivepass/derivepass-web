@@ -67,14 +67,15 @@
   <button
     type="submit"
     on:click|preventDefault={() => updateServiceWorker()}
-    class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white"
+    class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+      text-white"
   >
     Reload
   </button>
   <button
     type="reset"
     on:click|preventDefault={() => $needRefresh = false}
-    class="px-4 py-2 rounded text-yellow-500 hover:text-yellow-600
+    class="px-4 py-2 rounded text-yellow-400 hover:text-yellow-500
       hover:underline"
   >
     Skip

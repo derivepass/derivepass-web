@@ -9,7 +9,10 @@
   const year = new Date().getFullYear();
 </script>
 
-<container class="flex flex-row-reverse flex-wrap justify-center items-center text-center sm:text-start">
+<container
+  class="flex flex-row-reverse flex-wrap justify-center items-center
+    text-center sm:text-start"
+>
   <img src={logo} alt="Big Logotype" class="grow max-w-xs lg:max-w-full"/>
 
   <container class="grow basis-96 mb-4">
@@ -22,7 +25,8 @@
     <a
       href="/login"
       use:link
-      class="inline-block px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white text-xl"
+      class="inline-block px-4 py-2 rounded bg-blue-600 hover:bg-blue-700
+        active:bg-blue-800 text-white text-xl"
     >
       Start
     </a>

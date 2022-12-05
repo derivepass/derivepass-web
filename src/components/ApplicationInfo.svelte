@@ -147,8 +147,8 @@
   <button
     on:click|preventDefault={onComputeOrCopy}
     disabled={!$isValid || passwordState === PasswordState.Computing}
-    class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
-      disabled:bg-blue-400"
+    class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+      text-white disabled:bg-blue-400"
   >
     {#if passwordState === PasswordState.Initial}
       Compute password
@@ -164,13 +164,13 @@
   </button>
   <button
     on:click|preventDefault={toggleEditing}
-    class="text-blue-500 hover:text-blue-600 hover:underline"
+    class="text-blue-600 hover:text-blue-700 hover:underline"
   >
     Edit
   </button>
   <button
     on:click|preventDefault={onBack}
-    class="text-blue-500 hover:text-blue-600 hover:enabled:underline
+    class="text-blue-600 hover:text-blue-700 hover:enabled:underline
       disabled:text-gray-400"
     disabled={$isDirty}
   >
@@ -251,8 +251,8 @@
     <button
       type="submit"
       disabled={$isValid && !$isDirty}
-      class="px-4 py-2 rounded-l bg-blue-500 hover:bg-blue-600 text-white
-        disabled:bg-blue-400"
+      class="px-4 py-2 rounded-l bg-blue-600 hover:bg-blue-700
+        active:bg-blue-800 text-white disabled:bg-blue-400"
     >
       Save
     </button>

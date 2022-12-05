@@ -45,8 +45,8 @@
   <section class="mt-4 flex gap-1">
     <button
       type="button"
-      class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
-        disabled:bg-blue-400"
+      class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+        text-white disabled:bg-blue-400"
       on:click|preventDefault={sync}
     >
       Sync Now
@@ -101,8 +101,8 @@
 
     <button
       type="submit"
-      class="px-4 py-2 rounded bg-blue-500 hover:bg-blue-600 text-white
-        disabled:bg-blue-400"
+      class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 active:bg-blue-800
+        text-white disabled:bg-blue-400"
     >
       Login
     </button>

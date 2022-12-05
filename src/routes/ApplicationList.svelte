@@ -22,8 +22,7 @@
 </script>
 
 <form
-  class="flex items-center rounded focus-within:outline-2 focus-within:outline
-    outline-blue-500"
+  class="flex items-center rounded focus-within:ring"
   autocomplete="off"
   on:submit|preventDefault={onSubmit}
 >
@@ -35,8 +34,9 @@
     bind:value={filter}
     />
   <input
-    class="shrink px-4 py-2 rounded-r border-y border-blue-500
-      hover:border-blue-600 bg-blue-500 hover:bg-blue-600 text-white"
+    class="shrink px-4 py-2 rounded-r border-y
+      border-blue-600 hover:border-blue-700 active:border-blue-800
+      bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white"
     type="button"
     value="Add application"
     on:click|preventDefault={onAdd}
